@@ -16,9 +16,9 @@ class BlogArticles(models.Model):
     # 第4个字段
     publish = models.DateTimeField(default=timezone.now)
 
-class Meta:
-    # 指定BlogArticles实例对象名
-    ordering = ("-publish",)
+    class Meta:
+        ordering = ("-publish",)
     
-def __str__(self):
-    return self.title
+    def __str__(self):
+        # 指定BlogArticles实例对象名
+        return self.title
