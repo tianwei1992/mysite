@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import BlogArticles
 
-# Create your views here.
+"""to return a html view with render"""
 def blog_title(request):
     blogs = BlogArticles.objects.all()
     return render(request, "blog/titles.html", {"blogs":blogs})
