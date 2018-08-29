@@ -1,2 +1,4 @@
 *.out
+*.swp
+*.sqlite3
 __pycache__
