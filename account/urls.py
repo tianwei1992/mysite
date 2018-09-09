@@ -8,5 +8,6 @@ app_name = "account"
 urlpatterns = [
     # url('^login/$', views.user_login, name="user_login"),
     url(r'^login/$', auth_views.LoginView.as_view(), name="user_login"),
+    url(r'^new-login/$', auth_views.LoginView.as_view(template_name="account/login.html"), name="user_login"),
     
 ]
