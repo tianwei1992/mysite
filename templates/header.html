@@ -10,7 +10,12 @@
                <li><a href="{% url 'blog:blog_title' %}">BLOG</a></li>
             </ul>
            <ul class="nav navbar-nav navbar-right">
+                 {% if user.is_authenticated %}
+                 <li><a href="#" >{{user.username}}</a></li>
+                 <li><a href="#" >Logout</a></li>
+                 {% else %}
                  <li><a href="{% url 'account:user_login' %}">LOGIN</a></li>
+                 {% endif %}
            </ul>
         </div>
     </nav>
