@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
 
 def user_login(request):
     if request.method == "POST":
@@ -21,4 +21,16 @@ def user_login(request):
         login_form = LoginForm()
         return render(request, "account/login.html", {"form": login_form})
             
-
+def register(request):
+    if request.method == "POST":
+        user_form = RegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+            return HttpResponse("Successfully")
+        else:
+            return HttpResponse("Sorry, you can not register.")
+    else:
+        user_form = RegistrationForm()
+        return render(request, "account/register.html", {"form": user_form})
