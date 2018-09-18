@@ -28,6 +28,16 @@
              <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Confirm Password</label>
         <div class="col-md-6 text-left">{{ form.password2 }}</div>
         </div>
+
+     <div class="form-group">
+             <label for="{{ profile.birth.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Birth Date</label>
+        <div class="col-md-6 text-left">{{ profile.birth}}</div>
+        </div>
+
+     <div class="form-group">
+             <label for="{{ profile.phone.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Phone</label>
+        <div class="col-md-6 text-left">{{ profile.phone}}</div>
+        </div>
       <input type="submit" class="btn btn-primary btn-lg"value="Register">
    </form>
 </div>

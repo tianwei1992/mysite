@@ -1,3 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+class UserProfile(models.Model):
+    """注册用新的model，通过user字段对User表一一对应"""
+    user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
+    birth = models.DateField(blank=True, null=True)
+    phone = models.CharField(max_length=20, null=True)
+    
+    def __str__(self):
+        return 'User {}'.format(self.user.username)
+
