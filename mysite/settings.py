@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'music',
-    "account"
+    "account",
+    "password_reset"
 ]
 
 MIDDLEWARE = [
