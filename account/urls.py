@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^password-reset-confirm/(?P<uidb64>[-\w]+)/(?P<token>[-\w]+)/$', auth_views.PasswordResetConfirmView.as_view(template_name="account/password_reset_confirm.html", success_url=reverse_lazy('account:password_reset_complete')), name="password_reset_confirm"),
     url(r'^password-reset-complete/$', auth_views.PasswordResetCompleteView.as_view(template_name="account/password_reset_complete.html"), name="password_reset_complete"),
     url(r'^my-information/$', views.myself, name="my_information"),
+    url(r'^edit-my-information/$', views.myself_edit, name="edit_my_information"),
 ]
