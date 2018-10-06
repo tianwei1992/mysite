@@ -60,7 +60,12 @@ $(window).load(function() {
             type: 'POST', 
             data: {"img": img},
             success:function(e){
-                location.href= '{% url "account:my_information" %}'
+                //location.href= '{% url "account:my_information" %}'
+                if(e == "1"){
+                    parent.location.reload();
+                }else{
+                    alert("sorry, the picture can't be uploaded.")
+                }
             },
         });
 	})
