@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}my information{% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
@@ -48,7 +49,11 @@
         </form>
         </div>
         <div class="col-md-6">
-            <p>picture</p>
+            {% if userinfo.photo %}
+            <img src="{{ userinfo.photo}}"> 
+            {% else %}
+            <img name="user_face" src="{% static 'images/profile_photo_default.jpg' %}" class="img-circle" width="270px" id="my_photo">
+            {% endif %}
         </div>
     </div>
 </div>
