@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block title %}my information{% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
@@ -43,7 +44,14 @@
             </div>
         </div>
         <div class="col-md-6">
-            <p>picture</p>
+        <div style="margin-right:100px">
+            {% if userinfo.photo %}
+            <img src="{{ userinfo.photo|striptags }}" class="im-circle" id="my-pyoto" name="user-face">
+            {% else %}
+            <img name="user_face" src="{% static 'images/profile_photo_default.jpg' %}" class="img-circle" width="270px" id="my_photo">
+            {% endif %}
+            </div>
+            <div style="margin-right:100px"><button class="btn btn-primary btn-lg" id="upload_image" onclick="upload_image_layer()">upload my photo</button></div>
         </div>
     </div>
     <a href="{% url 'account:edit_my_information' %}"><button class="btn btn-primary btn-lg">edit my information</button></a>
