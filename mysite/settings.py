@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'blog',
     'music',
     "account",
-    "password_reset"
+    "password_reset",
+    "article"
 ]
 
 MIDDLEWARE = [

@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^blog/', include('blog.urls')),
     url(r'^account/', include('account.urls')),
     url(r'^pwd_reset/',include(('password_reset.urls', 'password_reset'), namespace='pwd_reset')),
+    url(r'^article/',include(('article.urls', "article"), namespace='article')),
+
 ]

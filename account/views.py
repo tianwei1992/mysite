@@ -55,8 +55,9 @@ def myself(request):
 @login_required(login_url='/account/login/')
 def myself_edit(request):
     user = User.objects.get(username=request.user.username)
-    userprofile = UserProfile.objects.get(user=request.user)
-    userinfo = UserInfo.objects.get(user=request.user) 
+    # origin:user=request.user,but does it matter?
+    userprofile = UserProfile.objects.get(user=user)
+    userinfo = UserInfo.objects.get(user=user) 
 
     if request.method == "POST":
         user_form = UserForm(request.POST)
