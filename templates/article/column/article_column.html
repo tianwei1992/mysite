@@ -88,6 +88,32 @@
 }
 
 
+    function del_column(the, column_id){
+        var name = $(the).parents("tr").children("td").eq(1).text();
+        var index = layer.open({
+            type:1,
+            skin:"layui-layer-rim",
+            area:["400px", "200px"],
+            title:"删除",
+            content:'<div class="text-center" style="margin-top:20px"><p>确定要删除['+name+']栏目吗？</p></div>',
+            btn:["确定","取消"],
+            yes:function(index, layero){
+                $.ajax({
+                url:"{% url 'article:delete_article_column' %}",
+                type:"POST",
+                data:{"column_id":column_id},
+                success:function(e){
+                    if(e=="1"){
+                        parent.location.reload();
+                        layer.msg("good");
+                    }else{
+                        layer.msg("栏目删除失败。")
+                    }
+                },
+            });
+        },
+    });
+}
 </script>
 
 {% endblock %}

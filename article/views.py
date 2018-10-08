@@ -39,3 +39,17 @@ def rename_article_column(request):
     except Exception as e:
         print(e)
         return HttpResponse("0")
+
+
+@login_required(login_url='/account/login/')
+@require_POST
+@csrf_exempt
+def delete_article_column(request):
+    column_id = request.POST["column_id"]
+    try:
+        line = ArticleColumn.objects.get(id=column_id)
+        line.delete()
+        return HttpResponse("1")
+    except Exception as e:
+        print(e)
+        return HttpResponse("0")
