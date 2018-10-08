@@ -1,7 +1,7 @@
 from django import forms
-from .models import ArticalColumn
+from .models import ArticleColumn
 
 class ArticleColumnForm(forms.ModelForm):
     class Meta:
         model = ArticleColumn
-        fillds = ("column", )
+        fields = ("column", )
