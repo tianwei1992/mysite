@@ -11,8 +11,8 @@
 </head>
 
 <body>
+{% include 'article/header.html' %}
 <div class="container">
-    {% include 'article/header.html' %}
     <div class="col-md-2">
     {% include 'article/leftslider.html' %}
     </div>
@@ -20,8 +20,8 @@
     {% block content %}
     {% endblock %}
     </div>
-    {% include 'footer.html' %}
 </div>
+{% include 'footer.html' %}
 </body>
 </html>
 
