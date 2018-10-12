@@ -25,6 +25,7 @@
     </table>
 </div>
 
+
 <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/layer.js' %}"></script>
 <script type="text/javascript">
@@ -38,6 +39,9 @@
             btn:["确定","取消"], 
             yes:function(index, layero){
                 column_name = $('#id_column').val();
+                $.ajaxSetup({
+    data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
                 $.ajax({
                     url:'{% url "article:article_column" %}',
                     type:"POST",

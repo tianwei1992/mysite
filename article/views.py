@@ -9,7 +9,6 @@ from .forms import ArticleColumnForm, ArticlePostForm
 
 # Create your views here.
 @login_required(login_url='/account/login/')
-@csrf_exempt
 def article_column(request):
     if request.method == "GET":
         columns = ArticleColumn.objects.filter(user=request.user)
