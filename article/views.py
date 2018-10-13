@@ -82,3 +82,25 @@ def article_list(request):
 def article_detail(request, id, slug):
     article = ArticlePost.objects.get(author=request.user, id=id, slug=slug)
     return render(request, "article/column/article_detail.html", {"article":article})
+
+
+@login_required(login_url='/account/login/')
+@require_POST
+def delete_article(request):
+    article_id = request.POST["article_id"]
+    try:
+        line = ArticlePost.objects.get(id=article_id)
+        line.delete()
+        return HttpResponse("1")
+    except Exception as e:
+        print(e)
+        return HttpResponse("0")
+
+@login_required(login_url='/account/login/')
+def redit_article(request, article_id):
+    if request.method == "GET":
+        article_columns = request.user.article_column.all()
+        article = ArticlePost.objects.get(id=article_id)
+        this_article_form = ArticlePostForm(initial={"title": article.title})
+        this_article_column = article.column
+        return render(request, "article/column/redit_article.html", {"article":article, "article_columns": article_columns, "this_article_form":this_article_form, "this_article_column": this_article_column})

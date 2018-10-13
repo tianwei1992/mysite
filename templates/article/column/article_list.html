@@ -15,10 +15,82 @@
         <td>{{ forloop.counter }}</td>
         <td><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></td>
         <td>{{ article.column }}</td>
-        <td> -- </td>
+        <td>
+            <a name="edit" href="javascript:" onclick="edit_article(this, {{ article.id }})"<span class="glyphicon glyphicon-pencil"></span><a>
+            <a name="delete" href="javascript:" onclick="del_article(this, {{ article.id }})"<span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
+         </td>
     </tr>
     {% endfor %}
     </table>
 </div>
+
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/layer.js' %}"></script>
+<script type="text/javascript">
+
+    function edit_column(the, article_id){
+        var name = $(the).parents("tr").children("td").eq(1).text();
+        var index = layer.open({
+            type:1,
+            skin:"layui-layer-rim",
+            area:["400px", "200px"],
+            title:"编辑栏目",
+            content:'<div class="text-center" style="margin-top:20px"><p>请输入新的栏目名称</p><p><input type="text" id="new_name" value="'+name+'"></p></div>',
+            btn:["确定","取消"],
+            yes:function(index, layero){
+                new_name = $("#new_name").val();
+            $.ajaxSetup({
+     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
+
+                $.ajax({
+                url:"{% url 'article:rename_article_column' %}",
+                type:"POST",
+                data:{"column_id":column_id, "column_name":new_name},
+                success:function(e){
+                    if(e=="1"){
+                        parent.location.reload();
+                        layer.msg("good");
+                    }else{
+                        layer.msg("栏目名称修改失败。")
+                    }
+                },
+            });
+        },
+    });
+}
+
+
+    function del_article(the, article_id){
+        var name = $(the).parents("tr").children("td").eq(1).text(); 
+        var index = layer.open({
+            type:1,
+            skin:"layui-layer-rim",
+            area:["400px", "200px"],
+            title:"删除",
+            content:'<div class="text-center" style="margin-top:20px"><p>确定要删除['+name+']吗？</p></div>',
+            btn:["确定","取消"],
+            yes:function(index, layero){
+            $.ajaxSetup({
+     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
+                $.ajax({
+                url:"{% url 'article:delete_article' %}",
+                type:"POST",
+                data:{"article_id":article_id},
+                success:function(e){
+                    if(e=="1"){
+                        parent.location.reload();
+                        layer.msg("good");
+                    }else{
+                        layer.msg("文章删除失败。")
+                    }
+                },
+            });
+        },
+    });
+}
+</script>
+
 {% endblock %}
    
