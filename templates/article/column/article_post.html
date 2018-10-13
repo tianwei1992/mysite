@@ -2,6 +2,8 @@
 {% load staticfiles %}
 {% block title %}article column{% endblock %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'editor/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'editor/css/editormd.css' %}">
 <div style="margin-left:10px">
     <form class="form-horizontal" action="." method="post">{% csrf_token %}
         <div class="row" style="margin-top:10px">
@@ -20,7 +22,9 @@
         </div>
         <div class="row" style="margin-top:10px">
             <div class="col-md-2 text-right"><span>内容：</span></div>
-            <div class="col-md-10 text-left">{{ articlepost_form.body }}</div>
+            <div id="editormd" class="col-md-10 text-left">
+                <textarea style="display:none;" id="id_body"></textarea>
+            </div>
         </div>
         <div class="row">
             <input type="button" class="btn btn-primary btn-lg" value=" 发布 " onclick="publish_article()">
@@ -45,13 +49,24 @@
                 }else if(e=="2"){
                     layer.msg("sorry~");
                 }else{
-                    layer.msg("栏目名称不能为空呢~");
+                    layer.msg("栏目名称和内容都不能为空呢~");
                 }
             },
         });
     }
 </script>
 
+<script type="text/javascript" src="{% static 'editor/editormd.min.js' %}"></script>
+<script type="text/javascript">
+    $(function(){
+        var editor = editormd("editormd", {
+            width:"100%",
+            height:640,
+            syncScrolling:"single",
+            path:"{% static 'editor/lib/' %}"
+        });
+    });
+</script>
 {% endblock %}
    
            
