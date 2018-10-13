@@ -70,7 +70,7 @@ def article_post(request):
                 print(e)
                 return HttpResponse("2")
         else:
-            return HttpResposne("3")
+            return HttpResponse("3")
     elif request.method == "GET":
         articlepost_form = ArticlePostForm()
         print(type(request.user))
