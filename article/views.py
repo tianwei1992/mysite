@@ -76,3 +76,8 @@ def article_post(request):
         print(type(request.user))
         article_columns = request.user.article_column.all()
         return render(request, "article/column/article_post.html", {"article_columns":article_columns, "articlepost_form":articlepost_form})
+
+@login_required(login_url='/account/login/')
+def article_list(request):
+    article_posts = ArticlePost.objects.filter(author=request.user)
+    return render(request, "article/column/article_list.html", {"articles":article_posts})
