@@ -73,6 +73,10 @@
             btn:["确定","取消"],
             yes:function(index, layero){
                 new_name = $("#new_name").val();
+            $.ajaxSetup({
+     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
+
                 $.ajax({
                 url:"{% url 'article:rename_article_column' %}",
                 type:"POST",
@@ -101,6 +105,9 @@
             content:'<div class="text-center" style="margin-top:20px"><p>确定要删除['+name+']栏目吗？</p></div>',
             btn:["确定","取消"],
             yes:function(index, layero){
+            $.ajaxSetup({
+     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+});
                 $.ajax({
                 url:"{% url 'article:delete_article_column' %}",
                 type:"POST",

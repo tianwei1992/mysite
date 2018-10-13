@@ -39,6 +39,10 @@
         var title = $("#id_title").val();
         var column_id = $("#which_column").val();
         var body = $("#id_body").val();
+         $.ajaxSetup({
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+ });
+
         $.ajax({
             url:"{% url 'article:article_post' %}",
             type:"POST",
