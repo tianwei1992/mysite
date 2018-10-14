@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %} articles {% endblock %}
+
+{% block content %}
+<div class="row text-center vertical-middle-sm">
+    <h1>在小时候的黄昏见</h1>
+</div>
+
+<div class="container">
+    {% for article in articles %}
+        <div class="list-group">
+            <a href="#" class="list-group-item active">
+                <h4 class="list-group-item-heading">{{ article.title }}</h4>
+                <p class="list-group-item-text">作者：{{ article.author }}</p>
+                <p class="list-group-item-text">概要：{{ article.body|slice:'80'|linebreaks }}</p>
+            </a>
+        </div>
+    {% endfor %}
+{% include "paginator.html" %}
+</div>
+{% endblock %}
