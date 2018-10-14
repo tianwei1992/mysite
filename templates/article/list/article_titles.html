@@ -10,7 +10,7 @@
 <div class="container">
     {% for article in articles %}
         <div class="list-group">
-            <a href="#" class="list-group-item active">
+            <a href="{{ article.get_url_path }}" class="list-group-item active">
                 <h4 class="list-group-item-heading">{{ article.title }}</h4>
                 <p class="list-group-item-text">作者：{{ article.author }}</p>
                 <p class="list-group-item-text">概要：{{ article.body|slice:'80'|linebreaks }}</p>
