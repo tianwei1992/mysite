@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
@@ -91,7 +91,7 @@ def article_list(request):
 
 @login_required(login_url='/account/login/')
 def article_detail(request, id, slug):
-    article = ArticlePost.objects.get(author=request.user, id=id, slug=slug)
+    article = get_object_or_404(ArticlePost, author=request.user, id=id, slug=slug)
     return render(request, "article/column/article_detail.html", {"article":article})
 
 
