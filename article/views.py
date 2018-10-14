@@ -112,6 +112,6 @@ def redit_article(request, article_id):
             redit_article.save()
             return HttpResponse("1")
         except: 
-            return HttpResponse("1")
+            return HttpResponse("0")
 
 
