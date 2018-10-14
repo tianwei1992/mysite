@@ -16,7 +16,7 @@
         <td><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></td>
         <td>{{ article.column }}</td>
         <td>
-            <a name="edit" href="javascript:" onclick="edit_article(this, {{ article.id }})"<span class="glyphicon glyphicon-pencil"></span><a>
+            <a name="edit" href="{% url 'article:redit_article' article.id %}"span class="glyphicon glyphicon-pencil"></span><a>
             <a name="delete" href="javascript:" onclick="del_article(this, {{ article.id }})"<span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
          </td>
     </tr>
@@ -90,6 +90,8 @@
         },
     });
 }
+
+
 </script>
 
 {% endblock %}
