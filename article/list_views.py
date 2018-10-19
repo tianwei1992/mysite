@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ArticleColumn, ArticlePost
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
 
 def article_titles(request, username=None):
     if username:
@@ -32,3 +34,23 @@ def article_titles(request, username=None):
 def article_detail(request, id, slug):
     article = get_object_or_404(ArticlePost, id=id, slug=slug)
     return render(request, "article/list/article_detail.html", {"article": article})
+
+@require_POST
+def like_article(request):
+    if request.user.is_authenticated:
+        article_id = request.POST.get("id")
+        action = request.POST.get("action")
+        if article_id and action:
+            try:
+                article = ArticlePost.objects.get(id=article_id)
+                if action == "like":
+                    article.users_like.add(request.user)
+                    return HttpResponse("1")
+                else:
+                    article.users_like.remove(request.user)
+                    return HttpResponse("2")
+            except Exception as e:
+                print(e)
+                return HttpResponse("no")
+    else:
+        return HttpResponse('/account/new-login/?next=%s' % request.path)
