@@ -133,3 +133,7 @@ STATICFILES_DIRS = [
 LOGIN_REDIRECT_URL = "/home/"
 
 LOGIN_URL = "/account/login"
+
+REDIS_HOST = "localhost"
+REDIS_PORT = 60025
+REDIS_DB = 0
