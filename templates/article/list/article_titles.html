@@ -1,10 +1,12 @@
 {% extends "base.html" %}
+{% load article_tags %}
 
 {% block title %} articles {% endblock %}
 
 {% block content %}
 <div class="row text-center vertical-middle-sm">
     <h1>在小时候的黄昏见</h1>
+    <p>本站现有{% total_articles %}篇文章，欢迎阅读~</p>
 </div>
 
 <div class="container">
