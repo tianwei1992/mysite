@@ -76,7 +76,7 @@
 </div>
 
 <div class="col-md-3">
-<p class="text-center"><h3>最受欢迎的文章</h3></p>
+<p class="text-center"><h3>最受欢迎</h3></p>
 <ol>
     {% for article_rank in most_viewed %}
     <li>
@@ -85,8 +85,18 @@
     {% endfor %}
 </ol>
 <hr>
-<p class="text-center"><h3>最新文章</h3></p>
+<p class="text-center"><h3>最近更新</h3></p>
 {% latest_articles 4 %}
+<hr>
+<p class="text-center"><h3>最多评论</h3></p>
+{% most_commented_articles as most_comments %}
+<ul>
+    {% for comment_article in most_comments %}
+    <li>
+        <a href="{{comment_article.get_url_path}}">{{ comment_article.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
 </div>
 
 <script src='{% static "js/jquery.js" %}'></script>
