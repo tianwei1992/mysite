@@ -22,7 +22,10 @@
 
 
 <div id="editormd-view">
-        <textarea id="append-test"style="display:none;">{{ article.body }}</textarea>
+        <div> 
+        <!--<textarea id="append-test"style="display:none;">{{ article.body }}</textarea>--> 
+        {{ article.body | markdown }}
+        </div>
 </div>
 <div>
         <p class="text-center">
