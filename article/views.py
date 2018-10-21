@@ -4,8 +4,8 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import ArticleColumn, ArticlePost
-from .forms import ArticleColumnForm, ArticlePostForm
+from .models import ArticleColumn, ArticlePost, ArticleTag
+from .forms import ArticleColumnForm, ArticlePostForm, ArticleTagForm
 
 # Create your views here.
 @login_required(login_url='/account/login/')
@@ -127,3 +127,34 @@ def redit_article(request, article_id):
             return HttpResponse("0")
 
 
+@login_required(login_url='/account/login/')
+def article_tag(request):
+    if request.method == "GET":
+        article_tags = ArticleTag.objects.filter(author=request.user)
+        article_tag_form = ArticleTagForm()
+        return render(request, "article/tag/tag_list.html", {"article_tags": article_tags, "article_tag_form": article_tag_form})
+    elif request.method == "POST":
+        tag_post_form = ArticleTagForm(data=request.POST)
+        if tag_post_form.is_valid():
+            try:
+                new_tag = tag_post_form.save(commit=False)
+                new_tag.author = request.user
+                new_tag.save()
+                return HttpResponse("1")
+            except:
+                return HttpResponse("the data cannot be save.")
+        else:
+            return HttpResponse("sorry, the form is not valid")
+
+
+@login_required(login_url='/account/login/')
+@require_POST
+def delete_article_tag(request):
+    tag_id = request.POST["tag_id"]
+    try:
+        line = ArticleTag.objects.get(id=tag_id)
+        line.delete()
+        return HttpResponse("1")
+    except Exception as e:
+        print(e)
+        return HttpResponse("2")

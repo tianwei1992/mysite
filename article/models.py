@@ -6,12 +6,20 @@ from django.urls import reverse
 
 # Create your models here.
 class ArticleColumn(models.Model):
-    user = models.ForeignKey(User, related_name = "article_column", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="article_column", on_delete=models.CASCADE)
     column = models.CharField(max_length=200)
     created = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.column
+
+
+class ArticleTag(models.Model):
+    author = models.ForeignKey(User, related_name="tag", on_delete=models.CASCADE)
+    tag = models.CharField(max_length=500)
+    
+    def __str__(self):
+        return self.tag
 
 class ArticlePost(models.Model):
     author = models.ForeignKey(User, related_name="article", on_delete=models.CASCADE)
@@ -22,6 +30,7 @@ class ArticlePost(models.Model):
     created = models.DateTimeField(default=timezone.now())
     updated = models.DateTimeField(auto_now=True)
     users_like = models.ManyToManyField(User, related_name="article_like", blank=True)
+    article_tag = models.ManyToManyField(ArticleTag, related_name="article_tag", blank=True)
 
     class Meta:
         ordering = ("-updated",)
