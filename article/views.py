@@ -1,3 +1,6 @@
+import traceback
+import json
+
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -62,16 +65,26 @@ def article_post(request):
                 new_article.author = request.user
                 new_article.column = request.user.article_column.get(id=request.POST["column_id"]) 
                 new_article.save()
+                # save article tag as well
+                tags = request.POST['tags']
+                if tags:
+                    for atag in json.loads(tags):
+                        tag = request.user.tag.get(tag=atag)
+                        tag.article_tag.add(new_article)
+                        # todo:ok?
+                        # new_article.article_tag.add(tag)
                 return HttpResponse("1")
             except Exception as e:
                 print(e)
+                print(traceback.print_exc())
                 return HttpResponse("2")
         else:
             return HttpResponse("3")
     elif request.method == "GET":
         articlepost_form = ArticlePostForm()
         article_columns = request.user.article_column.all()
-        return render(request, "article/column/article_post.html", {"article_columns":article_columns, "articlepost_form":articlepost_form})
+        article_tags = request.user.tag.all()
+        return render(request, "article/column/article_post.html", {"article_columns":article_columns, "articlepost_form":articlepost_form, "article_tags": article_tags})
 
 @login_required(login_url='/account/login/')
 def article_list(request):

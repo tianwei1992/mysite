@@ -21,6 +21,18 @@
             </div>
         </div>
         <div class="row" style="margin-top:10px">
+            <div class="col-md-2 text-right"><span>标签：</span></div>
+            <div class="col-md-10 text-left">
+            {% for tag in article_tags %}
+            <label class="checkbox-inline">
+                <input class="tagcheckbox" type="checkbox" id="{{ tag.id }}" name="article_tag" value="{{ tag.tag }}">{{ tag.tag }}
+            </label>
+            {% empty %}
+            <p>你还没有文章标签，请在<a href='{% url "article:article_tag" %}'>这里</a>添加。</p>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="row" style="margin-top:10px">
             <div class="col-md-2 text-right"><span>内容：</span></div>
             <div id="editormd" class="col-md-10 text-left">
                 <textarea style="display:none;" id="id_body"></textarea>
@@ -34,11 +46,16 @@
 
 <script type="text/javascript" src='{% static "js/jquery.js" %}'></script>
 <script type="text/javascript" src='{% static "js/layer.js" %}'></script>
+<script type="text/javascript" src='{% static "js/json2.js" %}'></script>
+
 <script type="text/javascript">
     function publish_article(){
         var title = $("#id_title").val();
         var column_id = $("#which_column").val();
         var body = $("#id_body").val();
+        var article_tags =[];
+        $.each($("input[name='article_tag']:checked"),
+function(){article_tags.push($(this).val());});
          $.ajaxSetup({
       data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
  });
@@ -46,7 +63,7 @@
         $.ajax({
             url:"{% url 'article:article_post' %}",
             type:"POST",
-            data:{"title":title, "body":body, "column_id":column_id},
+            data:{"title":title, "body":body, "column_id":column_id, "tags":JSON.stringify(article_tags)}, 
             success:function(e){
                 if(e=="1"){
                     layer.msg("succeed!");
