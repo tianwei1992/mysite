@@ -101,6 +101,15 @@
     </li>
     {% endfor %}
 </ul>
+<hr>
+<p class="text-center"><h3>类似文章</h3></p>
+<ul>
+{% for similar in similar_articles %}
+<li><a href="{{ similar.get_url_path }}">{{ similar.title }}</a></li>
+{% empty %}
+<p>找不到相似文章</p>
+{% endfor %}
+</ul>
 </div>
 
 <script src='{% static "js/jquery.js" %}'></script>
