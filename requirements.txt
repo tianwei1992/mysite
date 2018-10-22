@@ -2,6 +2,7 @@ awesome-slugify==1.6.5
 certifi==2018.10.15
 Django==2.1.2
 django-password-reset==2.0
+Markdown==3.0.1
 Pillow==5.3.0
 pytz==2018.5
 redis==2.10.6
