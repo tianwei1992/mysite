@@ -35,7 +35,9 @@ def del_image(request):
     image_id = request.POST['image_id']
     try:
         image = Image.objects.get(id=image_id)
+        image.image.delete()
         image.delete()
         return JsonResponse({"status":"1"})
     except:
+        print(traceback.print_exc())
         return JsonResponse({"status":"2"})
