@@ -8,15 +8,16 @@
 <link rel="stylesheet" href="{% static 'css/mansory-style.css' %}" type="text/css" />
 <div id="my-gallery-container">
     {% for image in images %}
-        <div class="falls_item h200" data-order="{{ image.id }}">
-            <img src="{{ image.image.url }}">
-            <P>{{ image.title }}</p>
-        </div>
+    <div class="falls_item h200" data-order="{{ image.id }}">
+    <a href="javascript:void(0)" onclick="displayImage('{{ image.user }}', '{{ image.title }}', '{{ image.image.url }}', '{{ image.description }}', '{{ request.get_host }}')"><img src="{{ image.image.url }}"></a>
+    <p>{{ image.title }}</p>
+</div>
     {% endfor %}
 </div>
 </div>
 
 <script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/layer.js' %}"></script>
 <script src="{% static 'js/mp.mansory.min.js' %}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($){
@@ -34,8 +35,18 @@
             }
         );
     });
-</script>
 
+function displayImage(user, title, url, description, host){
+    layer.open({
+        type:1,
+        title:title,
+        skin:'layui-layer-rim',
+        area:['1200px', '600px'],
+        content:'<div class="text-center"><img src="http://'+host+url+'"><p>发布者:'+user+'</p></div><div style="margin-left:10px;">'+description+'</div>',
+});
+}
+
+</script>
 {% endblock %}
 
 
