@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'music',
     "account",
     "password_reset",
-    "article"
+    "article",
+    "image"
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,7 @@ LOGIN_URL = "/account/login"
 REDIS_HOST = "localhost"
 REDIS_PORT = 60025
 REDIS_DB = 0
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
