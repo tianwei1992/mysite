@@ -1,3 +1,6 @@
+import traceback
+import logging
+logger = logging.getLogger('mysite.error')
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ArticleColumn, ArticlePost, Comment
@@ -56,6 +59,8 @@ def article_detail(request, id, slug):
             new_comment = comment_form.save(commit=False)
             new_comment.article = article
             new_comment.save()
+        else:
+            logger.error(traceback.print_exc())
     elif request.method == "GET":
         comment_form = CommentForm()
     return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles})
@@ -75,7 +80,7 @@ def like_article(request):
                     article.users_like.remove(request.user)
                     return HttpResponse("2")
             except Exception as e:
-                print(e)
+                logger.error(traceback.print_exc())
                 return HttpResponse("no")
     else:
         return HttpResponse('/account/new-login/?next=%s' % request.path)

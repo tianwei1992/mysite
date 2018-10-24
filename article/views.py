@@ -1,4 +1,7 @@
 import traceback
+import logging
+logger = logging.getLogger('mysite.error')
+
 import json
 
 from django.shortcuts import render, get_object_or_404
@@ -38,7 +41,7 @@ def rename_article_column(request):
         line.save()
         return HttpResponse("1")
     except Exception as e:
-        print(e)
+        logger.error(traceback.print_exc())
         return HttpResponse("0")
 
 
@@ -51,7 +54,7 @@ def delete_article_column(request):
         line.delete()
         return HttpResponse("1")
     except Exception as e:
-        print(e)
+        logger.error(traceback.print_exc())
         return HttpResponse("0")
 
 @login_required(login_url='/account/login/')
@@ -75,8 +78,7 @@ def article_post(request):
                         # new_article.article_tag.add(tag)
                 return HttpResponse("1")
             except Exception as e:
-                print(e)
-                print(traceback.print_exc())
+                logger.error(traceback.print_exc())
                 return HttpResponse("2")
         else:
             return HttpResponse("3")
@@ -117,7 +119,7 @@ def delete_article(request):
         line.delete()
         return HttpResponse("1")
     except Exception as e:
-        print(e)
+        logger.error(traceback.print_exc())
         return HttpResponse("0")
 
 @login_required(login_url='/account/login/')
@@ -155,6 +157,7 @@ def article_tag(request):
                 new_tag.save()
                 return HttpResponse("1")
             except:
+                logger.error(traceback.print_exc())
                 return HttpResponse("the data cannot be save.")
         else:
             return HttpResponse("sorry, the form is not valid")
@@ -169,5 +172,5 @@ def delete_article_tag(request):
         line.delete()
         return HttpResponse("1")
     except Exception as e:
-        print(e)
+        logger.error(traceback.print_exc())
         return HttpResponse("2")

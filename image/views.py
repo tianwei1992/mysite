@@ -1,4 +1,7 @@
 import traceback
+import logging
+logger = logging.getLogger('mysite.error')
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -18,14 +21,15 @@ def upload_image(request):
             new_item.save()
             return JsonResponse({'status':'1'})
         except:
-            print(traceback.print_exc())
+            logger.error(traceback.print_exc())
             return JsonResponse({'status':'0'})
     else:
-        print("views:form is not valid",form.errors)
+        logger.error("The form is not valid {} {}".format(form.errors, request.POST))
         return JsonResponse({'status':'2'})
 
 @login_required(login_url='/account/login/')
 def list_images(request):
+    logger.info("[visited:]list_images{}".format(request.user))
     images = Image.objects.filter(user=request.user)
     return render(request, 'image/list_images.html', {'images': images})
 
@@ -39,7 +43,7 @@ def del_image(request):
         image.delete()
         return JsonResponse({"status":"1"})
     except:
-        print(traceback.print_exc())
+        logger.error(traceback.print_exc())
         return JsonResponse({"status":"2"})
 
 def falls_images(request):
