@@ -4,6 +4,8 @@
 __pycache__
 migrations/
 static/images/
+!static/images/back_logo.png
+!static/images/logo.png
 media/
 logs/
 
