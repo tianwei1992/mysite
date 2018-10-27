@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 from .email_settings import *
 from .logging_settings import *
+from .get_envs import if_online_env
+
+IF_ONLINE = if_online_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -137,7 +140,7 @@ LOGIN_REDIRECT_URL = "/home/"
 LOGIN_URL = "/account/login"
 
 REDIS_HOST = "localhost"
-REDIS_PORT = 60025
+REDIS_PORT = 60025 if IF_ONLINE else 60024
 REDIS_DB = 0
 
 MEDIA_URL = '/media/'
