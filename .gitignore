@@ -9,3 +9,4 @@ static/images/
 media/
 logs/
 mysite/redis_settings.py
+mysite/email_settings.py
