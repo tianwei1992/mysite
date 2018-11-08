@@ -1,5 +1,12 @@
 import os
 
+from django.http import UnreadablePostError
+
+def info_only(record):
+    if record.levelname=="INFO":
+        return True
+    return False
+
 ADMINS = (
      ('grace', 'tianweigrace@qq.com'),
 )
@@ -15,7 +22,7 @@ LOGGING = {
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {message}',
+            'format': '{levelname} {asctime} {module} {message}',
             'style': '{',
         },
     },
@@ -23,6 +30,10 @@ LOGGING = {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
+        'server_infos_only': {
+        '()': 'django.utils.log.CallbackFilter',
+        'callback': info_only,
+    }
     },
     'handlers': {
         'console': {
@@ -36,18 +47,49 @@ LOGGING = {
             'formatter': 'simple'
         },
         'file_errors': {
-            'level': 'INFO',
+            'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': 'logs/errors.log',
-            'formatter': 'verbose'
+            
         },
         
         'file_infos': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': 'logs/infos.log',
-            'formatter': 'verbose'
-        }
+            
+        },
+        'server_infos': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filters': ['server_infos_only'],
+            'filename': 'logs/server_infos.log',
+            'formatter': 'simple'
+        },
+        'article_infos': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/article_infos.log',
+            'formatter': 'simple'
+        },
+        'image_infos': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/image_infos.log',
+            'formatter': 'simple'
+        },
+        'request_warnings': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/request_warnings.log',
+            'formatter': 'simple'
+        },
+        'request_errors': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/request_errors.log',
+            
+        },
     },
     'loggers': {
         'django': {
@@ -55,14 +97,29 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['file_errors'],
-            'level': 'ERROR',
-            'propagate': False,
+            'handlers': ['request_warnings'],
+            'level': 'WARNING',
+            'propagate': False,# info recorded here,and will not be propagated to django logger
+        },
+        'django.server': {
+            'handlers': ['server_infos'],
+            'level': 'INFO',
+            'propagate': False,# info recorded here,and will not be propagated to django logger
         },
         'mysite.error': {
             'handlers': ['file_errors', ],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG'),
-            'propagate': True
+            'propagate': False
+        },
+        'mysite.article.info': {
+            'handlers': ['article_infos', ],
+            'level': 'INFO', 
+            'propagate': False
+        },
+        'mysite.image.info': {
+            'handlers': ['image_infos', ],
+            'level': 'INFO', 
+            'propagate': False
         },
         'myproject.custom': {
             'handlers': ['console', 'mail_admins'],

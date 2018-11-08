@@ -1,6 +1,7 @@
 import traceback
 import logging
 logger = logging.getLogger('mysite.error')
+info_logger = logging.getLogger('mysite.image.info')
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,12 @@ from django.views.decorators.http import require_POST
 from .forms import ImageForm
 from .models import Image
     
+import sys,os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+from utils.get_client_infos import get_visitor_ip, get_useragent
+
+
 # Create your views here.
 @login_required(login_url='/account/login/')
 @require_POST
@@ -47,6 +54,10 @@ def del_image(request):
         return JsonResponse({"status":"2"})
 
 def falls_images(request):
+    ip = get_visitor_ip(request)
+    ua = get_useragent(request)
     images = Image.objects.all()
+    info_logger.info('[public visit]falls_images ip:{} user:{},ua:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", ua))
+
     return render(request, 'image/falls_images.html', {"images":images})
 
