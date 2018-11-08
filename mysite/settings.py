@@ -11,10 +11,15 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from .email_settings import *
+import sys
+
+CONF_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(CONF_DIR)
+
+from confs.email_settings import *
 from .logging_settings import *
 from .get_envs import if_online_env
-from .redis_settings import *
+from confs.redis_settings import *
 
 IF_ONLINE = if_online_env()
 
