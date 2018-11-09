@@ -1,12 +1,103 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block title %}Home page{% endblock %}
 {% block content %}
-<div class="text-center">
-    <h1>Nice to meet you！Welcome！</h1>
-    <h3>田田田田</h3>
-    <h2>这是我的个人网站，请多指教~</h2>
+<div class="text-center" style="margin-top:10px; font-style:italic; color:LightSlateGray ; width:100%;height:70%;text-align:center;font-size:1.2em;font-family:'Times New Roman', Times, serif; line-height:100%; overflow:hidden;">
+    <div style="float: left; width: 60%;">
     {% load staticfiles %}
-    <img src="{% static 'images/home.jpg' %}">
+    <img src="{% static 'images/home.jpg' %}" style="width:650px;height:320px;">
+    </div>
+    <div style="float: left; width: 28%;margin-top:20px margin-bottom:20px">
+   <p> 宇宙的无理性偶然</p><p>
+呈现在你触动夏天的指尖</p><p>
+穿越过工业区穿越过梯田</p><p>
+相遇在漫长隧道的另一面</p><p>
+    </div>
+    <div style="float: right; width: 28%;margin-top:20px margin-bottom:20px">
+   <p> 回望身后片刻的永恒</p><p>
+像鸟一样在天空翱翔</p><p>
+恋爱和迁徙自由的飞翔</p><p>
+栖息在最无边的土壤</p><p>
+    </div>
+    <div style="float:left; width: 28%;margin-top:50px font-size:1.3em;">
+    <p>时空飞逝 年华老去</p>
+    <p>我们也许无力前行</p>
+    <p>但是你我都能知道</p>
+    <p>那是唯一的方向</p>
+    </div>
 </div>
 
+<div style="width:100%; margin-top:20px;">
+<div style="width:80%;float: left; ">
+<audio controls autoplay preload="metadata" style="width:900px;">
+    <source src="{% static 'audios/明天你依旧在我身旁.acc' %}" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+</div>
+<div class="info text-center" style="width:9%;float: left;">
+<!--
+                <div class="album">专辑：<span><a target="_blank" href="http://www.kuwo.cn/album/5484022/">声音玩具＆逃跑计划·专场</a></span></div>
+                <div class="artist">歌手：<span><a target="_blank" href="http://www.kuwo.cn/artist/content?name=%E5%A3%B0%E9%9F%B3%E7%8E%A9%E5%85%B7" data-id="4185">声音玩具</a></span></div>
+-->
+                <div class="singleShareBox" style="text-align:right;margin-top:10px">
+                    <button href="javascript:;" class="share" >分享歌曲</button>
+                    <div class="singleSharecontent" style="display: none;">
+                        <a href="javascript:;" class="quickShare new_sina" data-cmd="tsina" title="分享到新浪微博">分享到新浪微博</a>
+                        <a href="javascript:;" class="quickShare new_qzone" data-cmd="qzone" title="分享到QQ空间">分享到QQ空间</a>
+                        <a href="javascript:;" class="quickShare new_tqq" data-cmd="tqq" title="分享到腾讯微博">分享到腾讯微博</a>
+                        <a href="javascript:;" class="quickShare new_douban" data-cmd="douban" title="分享到豆瓣网">分享到豆瓣网</a>
+                    </div>
+                </div>
+ </div>
+ </div>
+
+
+<script>
+    $(function(){
+    //分享
+    $(".singleShareBox").click(function(){
+        var $shareContent = $(this).find(".singleSharecontent");
+        $shareContent.is(":hidden")?$shareContent.show():$shareContent.hide();
+        return false;
+    });
+    $("body").click(function(){
+        $(".singleSharecontent").hide();
+    });
+    $(".singleSharecontent .quickShare").click(function(){
+        var name = $("#lrcName").html();
+        var id = "41196167";//to improve
+        var pic = "";
+        var shareTo = $(this).attr("data-cmd");
+        var dataText = $(this).parent().attr("data-text")||"";
+        var shareTxt = "听到这首#"+name+"#，就无法淡定了……一定要转给大家一起听一听！(分享自@酷我音乐，海量正版无损音乐免费下载)。点击收听：";
+        if(dataText!=""){
+            shareTxt = dataText;
+        }
+        if(!id)return;
+        var songLink = "http://www.kuwo.cn/yinyue/"+id+"?catalog=yueku2016&qq-pf-to=pcqq.c2c"
+        addShareFn(shareTo,encodeURIComponent(shareTxt),songLink,pic);
+    });
+    });
+
+//分享fn
+function addShareFn(to,contTxt,shareUrl,pic) {
+    if(to=='renren') {
+        url = 'http://widget.renren.com/dialog/share?resourceUrl=' + encodeURIComponent(shareUrl) + '&title=' + contTxt + '&description='+'&pic='+pic;
+    }
+    if(to=='qzone') {
+        url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url= ' + encodeURIComponent(shareUrl)+'&title='+ contTxt+'&pics='+pic;
+    }
+    if(to=='tqq') {
+        url = 'http://share.v.t.qq.com/index.php?c=share&a=index&f=q2&url= ' + encodeURIComponent(shareUrl) + '&appkey=801109997&assname=kuwo-music&title=' + contTxt+'&pic='+pic;
+    }
+    if(to=='tsina') {
+        url = 'http://service.weibo.com/share/share.php?c=spr_web_kuwo_changba&appkey=2972927130&url=' + encodeURIComponent(shareUrl) + '&title=' + contTxt+'&pic='+pic+'&searchPic=false&style=simple';
+    }
+    if(to=='douban') {
+        url = 'http://www.douban.com/share/service?href='+encodeURIComponent(shareUrl)+'&name=酷我音乐&text=' + contTxt+'&pic='+pic;
+    }
+    window.open (url);
+}
+
+</script>
 {% endblock %}
