@@ -1,11 +1,11 @@
 {% load staticfiles %}
 <div class="container">
     <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid"> 
         <div class="navbar-header">
             <a class="navbar-brand" href="https://github.com/tianwei1992/mystite"><img src="{% static '/images/logo.png' %}" width="100px"></a>
         </div>
      
-        <div>
             <ul class="nav navbar-nav" role="navigation">
                <li><a href="{% url 'home' %}">Home</a></li>
                <li><a href="{% url 'article:article_titles' %}">Articles</a></li>
