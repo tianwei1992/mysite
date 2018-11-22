@@ -17,6 +17,7 @@
 <span style="margin-left:20px">{{ total_views }}view{{ total_views | pluralize:"s" }}</span>
 </p>
 <p><span style="margin-right:10px"><strong>Tags:</strong></span>{{ article.article_tag.all | join:", "}}</p>
+<p><span style="margin-right:10px"><strong>created</strong>:{{ article.created }}</span> <span style="margin-left:20px"><strong>updated</strong>:{{ article.updated }}</span></p>
 </header>
 
 <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}" >
