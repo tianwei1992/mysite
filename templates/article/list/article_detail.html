@@ -13,7 +13,7 @@
 <h1>{{ article.title }}</h1>
 <p>
 <a href="{% url 'article:author_articles' article.author.username %}">{{ article.author.username }}</a>
-<span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up">{{ total_likes }}like{{ total_likes | pluralize:"y,s" }}</span>
+<span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up">{{ total_likes }}like{{ total_likes | pluralize:",s" }}</span>
 <span style="margin-left:20px">{{ total_views }}view{{ total_views | pluralize:"s" }}</span>
 </p>
 <p><span style="margin-right:10px"><strong>Tags:</strong></span>{{ article.article_tag.all | join:", "}}</p>
