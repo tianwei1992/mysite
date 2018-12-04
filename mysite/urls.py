@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^blog/', include('blog.urls')),
     url(r'^account/', include('account.urls')),
     url(r'^pwd_reset/',include(('password_reset.urls', 'password_reset'), namespace='pwd_reset')),
+    url(r'^course/',include(('course.urls', "course"), namespace='course')),
     url(r'^article/',include(('article.urls', "article"), namespace='article')),
     url(r'^home/$', TemplateView.as_view(template_name="home.html"), name="home"),
     url(r'^image/',include(('image.urls', "image"), namespace='image')),

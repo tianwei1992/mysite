@@ -10,6 +10,7 @@
                <li><a href="{% url 'home' %}">Home</a></li>
                <li><a href="{% url 'article:article_titles' %}">Articles</a></li>
                <li><a href="{% url 'image:falls_images' %}">Images</a></li>
+               <li><a href="{% url 'course:about' %}">About</a></li>
             </ul>
            <ul class="nav navbar-nav navbar-right">
                  {% if user.is_authenticated %}
