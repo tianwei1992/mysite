@@ -1,0 +1,32 @@
+{% extends "article/base.html" %}
+{% block title %}Manage Course{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class='text-right'><a href="{% url 'course:create_course' %}"><button type='button' class='btn btn-primary'>添加课程</button></a></div>
+    <table class="table table-hover" style="margin-top:10px">
+    <tr>
+        <td>序号</td>
+        <td>课程名称</td>
+        <td>讲师</td>
+        <td>发布日期</td>
+        <td>操作</td>
+    </tr>
+{% for course in courses %}
+<tr id={{ forloop.counter }}>
+   <td>{{ forloop.counter }}</td>
+   <td>{{ course.title }}</td>
+   <td>{{ course.user.username }}</td>
+   <td>{{ course.created|date:"Y-m-d" }}</td>
+   <td>
+        <a name="delete" href="{% url 'course:delete_course' course.id %}"><span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+</div>
+
+{% endblock %}
+
