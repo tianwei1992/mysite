@@ -50,9 +50,12 @@ def rename_article_column(request):
 def delete_article_column(request):
     column_id = request.POST["column_id"]
     try:
-        line = ArticleColumn.objects.get(id=column_id)
+        line = ArticleColumn.objects.get(id=column_id, user=request.user)
         line.delete()
         return HttpResponse("1")
+    except ArticleColumn.DoesNotExist as e:
+        logger.error("Attack? delete_article_column column_id={}, author={}".format(column_id, request.user))
+        return HttpResponse("0")
     except Exception as e:
         logger.error(traceback.print_exc())
         return HttpResponse("0")
@@ -115,9 +118,12 @@ def article_detail(request, id, slug):
 def delete_article(request):
     article_id = request.POST["article_id"]
     try:
-        line = ArticlePost.objects.get(id=article_id)
+        line = ArticlePost.objects.get(id=article_id, author=request.user)
         line.delete()
         return HttpResponse("1")
+    except ArticlePost.DoesNotExist as e:
+        logger.error("Attack? delete_article article_id={}, author={}".format(article_id, request.user))
+        return HttpResponse("0")
     except Exception as e:
         logger.error(traceback.print_exc())
         return HttpResponse("0")
@@ -168,9 +174,12 @@ def article_tag(request):
 def delete_article_tag(request):
     tag_id = request.POST["tag_id"]
     try:
-        line = ArticleTag.objects.get(id=tag_id)
+        line = ArticleTag.objects.get(id=tag_id, author=request.user)
         line.delete()
         return HttpResponse("1")
+    except ArticleTag.DoesNotExist as e:
+        logger.error("Attack? delete_article_tag tag_id={}, author={}".format(tag_id, request.user))
+        return HttpResponse("2")
     except Exception as e:
         logger.error(traceback.print_exc())
         return HttpResponse("2")

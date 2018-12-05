@@ -50,6 +50,7 @@ LOGGING = {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
             'filename': 'logs/errors.log',
+            'formatter': 'simple'
             
         },
         
