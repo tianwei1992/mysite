@@ -20,6 +20,7 @@
    <td>{{ course.user.username }}</td>
    <td>{{ course.created|date:"Y-m-d" }}</td>
    <td>
+        <a class="update" name="update" href="{% url 'course:update_course' course.id %}"><span class="glyphicon glyphicon-pencil" ></span></a>
         <a class="delete" name="delete" href="{% url 'course:delete_course' course.id %}"><span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
     </td>
 </tr>

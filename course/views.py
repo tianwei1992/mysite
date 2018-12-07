@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.http.response import HttpResponse
 from .models import Course
-from django.views.generic import TemplateView,ListView,CreateView, DeleteView
+from django.views.generic import TemplateView,ListView,CreateView, DeleteView, UpdateView
 from django.contrib.auth.models import User
 from braces.views import LoginRequiredMixin
 from .forms import CreateCourseForm
@@ -62,7 +62,9 @@ class DeleteCourseView(UserCourseMixin, DeleteView):
             response_data = {"result":"ok"}
             return HttpResponse(json.dumps(response_data), content_type="application/json")
         else:
-            response_data = {"result":"ok"}
-            return HttpResponse(json.dumps(response_data), content_type="application/json")
-            #return resp
+            return resp
 
+class UpdateCourseView(UserCourseMixin, UpdateView):
+     template_name = "course/manage/update_course.html"
+     success_url = reverse_lazy("course:manage_course")
+     fields =["title", "overview"]
