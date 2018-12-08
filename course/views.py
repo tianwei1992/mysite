@@ -2,11 +2,12 @@ import json
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.http.response import HttpResponse
-from .models import Course
+from .models import Course,Lesson
 from django.views.generic import TemplateView,ListView,CreateView, DeleteView, UpdateView
+from django.views import View
 from django.contrib.auth.models import User
 from braces.views import LoginRequiredMixin
-from .forms import CreateCourseForm
+from .forms import CreateCourseForm,CreateLessonForm
 
 class AboutView(TemplateView):
     template_name="course/about.html"
@@ -68,3 +69,22 @@ class UpdateCourseView(UserCourseMixin, UpdateView):
      template_name = "course/manage/update_course.html"
      success_url = reverse_lazy("course:manage_course")
      fields =["title", "overview"]
+
+class CreateLessonView(LoginRequiredMixin, View):
+    model = Lesson
+    login_url = "/account/login/"
+    
+    def get(self, request, *args, **kwargs):
+        form = CreateLessonForm(user=self.request.user)
+        return render(request, "course/manage/create_lesson.html", {"form":form})
+
+    def post(self, request, *args, **kwargs):
+        form = CreateLessonForm(self.request.user, request.POST, request.FILES)
+        if form.is_valid():
+            new_lesson = form.save(commit=False)
+            new_lesson.user = self.request.user
+            new_lesson.save()
+            return redirect("course:manage_course")
+
+
+
