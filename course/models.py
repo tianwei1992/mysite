@@ -30,8 +30,8 @@ class Lesson(models.Model):
     user = models.ForeignKey(User, related_name='lesson_user', on_delete="CASCADE")
     course = models.ForeignKey(Course, related_name='lesson', on_delete="CASCADE")
     title = models.CharField(max_length=200)
-    vedio = models.FileField(upload_to=user_directory_path)
-    attach = models.FileField(upload_to=user_directory_path)
+    video = models.FileField(upload_to=user_directory_path)
+    attach = models.FileField(upload_to=user_directory_path, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField()
     order = OrderField(blank=True, for_fields=['course'])
@@ -46,3 +46,4 @@ class Lesson(models.Model):
 
     def __str__(self):
         return ('{}.{}'.format(self.order, self.title))
+

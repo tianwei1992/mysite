@@ -22,6 +22,7 @@
    <td>
         <a class="update" name="update" href="{% url 'course:update_course' course.id %}"><span class="glyphicon glyphicon-pencil" ></span></a>
         <a class="delete" name="delete" href="{% url 'course:delete_course' course.id %}"><span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
+        <a class="list_detail" name="list_detail" href="{% url 'course:list_lessons' course.id %}"><span class="glyphicon glyphicon-search" style="margin-left:20px;"></span></a>
     </td>
 </tr>
 
