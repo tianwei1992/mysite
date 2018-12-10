@@ -8,14 +8,16 @@
         <td>序号</td>
         <td>课程名称</td>
         <td>讲师</td>
+        <td>课程简介</td>
         <td>发布日期</td>
     </tr>
 {% for course in courses %}
 <tr id={{ forloop.counter }}>
    <td>{{ forloop.counter }}</td>
-   <td>{{ course.title }}</td>
+   <td><a href="{% url 'course:lessons_list' course.id%}">{{ course.title }}</a></td>
    <td>{{ course.user.username }}</td>
-   <td>{{ course.created }}</td>
+   <td>{% if course.description %} {{ course.description| slice:'70'|linebreaks }} {% else %}暂空，坐等更新</td>{% endif %}
+   <td>{{ course.created| date:"Y-m-d" }}</td>
 </tr>
 
 {% endfor %}

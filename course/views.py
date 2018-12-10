@@ -15,6 +15,7 @@ class AboutView(TemplateView):
     template_name="course/about.html"
 
 class CourseListView(ListView):
+    """require neirther login or course.user==request.user""" 
     model=Course
     context_object_name = "courses"
     template_name = "course/course_list.html"
@@ -143,3 +144,20 @@ class UpdateLessonView(UserLessonMixin, UpdateView):
         """If the form is valid, save the associated model."""
         self.object = form.save()
         return super().form_valid(form)
+
+class StudentListLessonView(ListLessonView):
+    template_name = "course/slist_lessons.html"
+
+    def post(self, request, *args, **kwargs):
+        course = Course.objects.get(id=kwargs['course_id'])
+        course.student.add(self.request.user)
+        return HttpResponse("ok")
+
+"""
+class StudentDetailLessonView(DetailLessonView):
+    template_name = "course/sdetail_lesson.html"
+
+    def get(self, request, lesson_id):
+        lesson = get_object_or_404(Lesson, id=lesson_id, course.student)
+        return self.render_to_response({'lesson':lesson})
+"""

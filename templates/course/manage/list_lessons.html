@@ -12,6 +12,7 @@
         <td>序号</td>
         <td>内容标题</td>
         <td>讲师</td>
+        <td>内容简介</td>
         <td>发布日期</td>
         <td>操作</td>
     </tr>
@@ -20,6 +21,7 @@
         <td>{{ forloop.counter }}</td>
         <td><a href="{% url 'course:detail_lesson' lesson.id %}">{{ lesson.title }}</a></td>
         <td>{{ lesson.user.username }}</td>
+        <td>{% if lesson.description %} {{ lesson.description| slice:'70'|linebreaks }} {% else %}暂空，坐等更新</td>{% endif %}
         <td>{{ lesson.created|date:"Y-m-d" }}</td>
    <td>
         <a class="update" name="update" href="{% url 'course:update_lesson' lesson.id %}"><span class="glyphicon glyphicon-pencil" ></span></a>
