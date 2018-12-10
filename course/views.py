@@ -153,11 +153,13 @@ class StudentListLessonView(ListLessonView):
         course.student.add(self.request.user)
         return HttpResponse("ok")
 
-"""
+
 class StudentDetailLessonView(DetailLessonView):
     template_name = "course/sdetail_lesson.html"
 
     def get(self, request, lesson_id):
-        lesson = get_object_or_404(Lesson, id=lesson_id, course.student)
-        return self.render_to_response({'lesson':lesson})
-"""
+        lesson = get_object_or_404(Lesson, id=lesson_id)
+        if (request.user not in lesson.course.student.all()):
+            return HttpResponse("请先参加课程~")
+        else:
+            return self.render_to_response({'lesson':lesson})

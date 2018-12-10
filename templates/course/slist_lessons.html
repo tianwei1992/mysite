@@ -21,7 +21,7 @@
         {% for lesson in course.lesson.all %}
         <tr id={{ forloop.counter }}>
             <td>{{ forloop.counter }}</td>
-            <td>{{ lesson.title }}</td>
+            <td><a href="{% url 'course:sdetail_lesson' lesson.id %}">{{ lesson.title }}</a></td>
             <td>{{ lesson.user.username }}</td>
             <td>{{ lesson.description| slice:'70'|linebreaks }}</td>
             <td>{{ lesson.created|date:"Y-m-d" }}</td>
