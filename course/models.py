@@ -7,7 +7,7 @@ from .fields import OrderField
 # Create your models here.
 
 class Course(models.Model):
-    user = models.ForeignKey(User, related_name='course_user', on_delete="CASCADE")
+    user = models.ForeignKey(User, related_name='course_user', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     overview = models.TextField()
@@ -27,8 +27,8 @@ def user_directory_path(instance, filename):
     return "course/user_{}/{}".format(instance.user.id, filename)
 
 class Lesson(models.Model):
-    user = models.ForeignKey(User, related_name='lesson_user', on_delete="CASCADE")
-    course = models.ForeignKey(Course, related_name='lesson', on_delete="CASCADE")
+    user = models.ForeignKey(User, related_name='lesson_user', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='lesson', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     video = models.FileField(upload_to=user_directory_path)
     attach = models.FileField(upload_to=user_directory_path, blank=True)
