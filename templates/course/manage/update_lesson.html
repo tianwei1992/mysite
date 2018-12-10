@@ -1,0 +1,13 @@
+{% extends "article/base.html" %}
+{% block title %}Create Course{% endblock %}
+
+{% block content %}
+<div style="margin-left:100px;margin-top:10px;">
+    <form action="." method="post"  enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p}}
+        <input type="submit" value="Update">
+    </form>
+</div>
+
+{% endblock %}
+

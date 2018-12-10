@@ -1,4 +1,5 @@
 {% extends "article/base.html" %}
+{% load staticfiles %}
 {% block title %}List Lessons{% endblock %}
 {% block content %}
 <div>
@@ -10,16 +11,74 @@
     <tr>
         <td>序号</td>
         <td>内容标题</td>
+        <td>讲师</td>
         <td>发布日期</td>
+        <td>操作</td>
     </tr>
     {% for lesson in course.lesson.all %}
     <tr id={{ forloop.counter }>
         <td>{{ forloop.counter }}</td>
         <td><a href="{% url 'course:detail_lesson' lesson.id %}">{{ lesson.title }}</a></td>
+        <td>{{ lesson.user.username }}</td>
         <td>{{ lesson.created|date:"Y-m-d" }}</td>
+   <td>
+        <a class="update" name="update" href="{% url 'course:update_lesson' lesson.id %}"><span class="glyphicon glyphicon-pencil" ></span></a>
+        <a class="delete" name="delete" href="{% url 'course:delete_lesson' lesson.id %}"><span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
+    </td>
    </tr>
     {% endfor %}
 
     </table>
 </div>
-{% endblock %}     
+
+
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script>
+function getCookie(name){
+    var cookieValue=null;
+    if (document.cookie && document.cookie!=''){
+    var cookies = document.cookie.split(";")
+    for(var i=0;i<cookies.length;i++){
+    var cookie = jQuery.trim(cookies[i]);
+    if (cookie.substring(0, name.length+1) ==(name +"=")){
+        cookieValue = decodeURIComponent(cookie.substring(name.length+1));
+        break;
+         }
+     }
+    }
+    return cookieValue;
+    }
+
+$(document).ready(function(){
+    var csrftoken = getCookie('csrftoken');
+    function csrfSafeMethod(method){
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain:false,
+        beforeSend:function(xhr, settings){
+            if (!csrfSafeMethod(settings.type)){
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    var onDelete=function(){
+        alert("delete it?");
+        $.post(this.href, function(data){
+            if(data.result=="ok"){
+                window.location.reload();
+            }else{
+                alert("sth wrong");
+            }
+        })
+        .fail(function(){alert("error");});
+        return false;
+    }
+
+    $(".delete").click(onDelete);
+})
+</script>
+
+
+{% endblock %}

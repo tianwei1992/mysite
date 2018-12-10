@@ -40,9 +40,15 @@ class Lesson(models.Model):
     class Meta:
         ordering=('order',)
 
-    def save(self, *args, **kargs):
+    def save(self, *args, **kwargs):
+        if self.pk:
+            this_record = Lesson.objects.get(pk=self.pk)
+            if (this_record.video != self.video):
+                this_record.video.delete(save=False)
+            if (this_record.attach != self.attach):
+                this_record.attach.delete(save=False)
         self.slug = slugify(self.title)
-        super(Lesson, self).save(*args, **kargs)
+        super(Lesson, self).save(*args, **kwargs)
 
     def __str__(self):
         return ('{}.{}'.format(self.order, self.title))
