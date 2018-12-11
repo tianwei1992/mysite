@@ -13,7 +13,7 @@ urlpatterns=[
     url(r'^list-lessons/(?P<course_id>\d+)$', ListLessonView.as_view(), name="list_lessons"),
     url(r'^lessons-list/(?P<course_id>\d+)$', StudentListLessonView.as_view(), name="lessons_list"),
     url(r'^detail-lesson/(?P<lesson_id>\d+)$', DetailLessonView.as_view(), name="detail_lesson"),
-    url(r'^lesson_detail/(?P<lesson_id>\d+)$',StudentDetailLessonView.as_view(), name="sdetail_lesson"),
+    url(r'^lesson-detail/(?P<lesson_id>\d+)$',StudentDetailLessonView.as_view(), name="sdetail_lesson"),
     url(r'^delete-lesson/(?P<pk>\d+)/$', DeleteLessonView.as_view(), name="delete_lesson"),
     url(r'^update-lesson/(?P<pk>\d+)/$', UpdateLessonView.as_view(), name="update_lesson"),
 ]
