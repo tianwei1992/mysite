@@ -11,6 +11,11 @@ from braces.views import LoginRequiredMixin
 from .forms import CreateCourseForm,CreateLessonForm
 from .models import Course,Lesson
 
+
+class GeneralLoginRequiredMixin(LoginRequiredMixin):
+    login_url = "/account/new-login/"
+
+
 class AboutView(TemplateView):
     template_name="course/about.html"
 
@@ -27,13 +32,13 @@ class UserMixin:
         qs = super(UserMixin, self).get_queryset()
         return qs.filter(user=self.request.user)
     
-class UserCourseMixin(UserMixin, LoginRequiredMixin):
+class UserCourseMixin(UserMixin, GeneralLoginRequiredMixin):
     model=Course
-    login_url = "/account/login/"
+#    login_url = "/account/new-login/"
 
-class UserLessonMixin(UserMixin, LoginRequiredMixin):
+class UserLessonMixin(UserMixin, GeneralLoginRequiredMixin):
     model=Lesson
-    login_url = "/account/login/"
+#     login_url = "/account/new-login/"
 
 class ManageCourseListView(UserCourseMixin, ListView):
     context_object_name = "courses"
@@ -78,9 +83,9 @@ class UpdateCourseView(UserCourseMixin, UpdateView):
      success_url = reverse_lazy("course:manage_course")
      fields =["title", "overview"]
 
-class CreateLessonView(LoginRequiredMixin, View):
+class CreateLessonView(GeneralLoginRequiredMixin, View):
     model = Lesson
-    login_url = "/account/login/"
+    login_url = "/account/new-login/"
     
     def get(self, request, *args, **kwargs):
         form = CreateLessonForm(user=self.request.user)
@@ -98,16 +103,16 @@ class CreateLessonView(LoginRequiredMixin, View):
             
 
 
-class ListLessonView(LoginRequiredMixin, TemplateResponseMixin, View):
-    login_url = "/account/login/"
+class ListLessonView(GeneralLoginRequiredMixin, TemplateResponseMixin, View):
+    login_url = "/account/new-login/"
     template_name = "course/manage/list_lessons.html"
 
     def get(self, request, course_id):
         course = get_object_or_404(Course, id=course_id)
         return self.render_to_response({'course':course})
     
-class DetailLessonView(LoginRequiredMixin, TemplateResponseMixin, View):
-    login_url = "/account/login/"
+class DetailLessonView(GeneralLoginRequiredMixin, TemplateResponseMixin, View):
+    login_url = "/account/new-login/"
     template_name = "course/manage/detail_lesson.html"
 
     def get(self, request, lesson_id):

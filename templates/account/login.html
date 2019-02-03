@@ -19,5 +19,12 @@
         </div>
       <input type="submit" class="btn btn-primary btn-lg"value="Login">
    </form>
+
+    <!--copy from templates/registration/login.html-->
+       <p style="margin-top:10px">Forgot your Password?<a href="{% url 'account:password_reset' %}">reset password</a></p>
+   <p style="margin-top:20px">If you had not ad username,<a href="{% url 'account:register' %}">Register to be a user</a>,please</p>
+
 </div>
+
+
 {% endblock %}
