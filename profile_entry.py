@@ -22,7 +22,8 @@ django.setup()
 
 def test_brand():
     # python manage.py test course.tests.BrandTest.test_details -k --settings mysite.settings
-    call_command("test", "course.tests.BrandTest.test_details", "-k")  # , verbosity=3, interactive=False)
+    #call_command("test", "course.tests.BrandTest.test_details", "-k")  # , verbosity=3, interactive=False)
+    call_command("test", "course.tests.BrandTest.test_details")  # , verbosity=3, interactive=False)
 
 
 if __name__ == '__main__':
