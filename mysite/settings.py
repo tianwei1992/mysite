@@ -17,12 +17,16 @@ CONF_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 sys.path.append(CONF_DIR)
 
 from confs.email_settings import *
-from confs.sentry_settings import *
 from .logging_settings import *
 from .get_envs import if_online_env
 from confs.redis_settings import *
 
+
 IF_ONLINE = if_online_env()
+
+if IF_ONLINE:
+    from confs.sentry_settings import *
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
