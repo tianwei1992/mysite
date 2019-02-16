@@ -87,8 +87,6 @@ def myself_edit(request):
         userinfo_form = UserInfoForm(initial={"school":userinfo.school,"company":userinfo.company,"address":userinfo.address, "aboutme":userinfo.aboutme,})
         return render(request, "account/myself_edit.html", {"user_form":user_form, "userprofile_form":userprofile_form, "userinfo_form": userinfo_form, "userinfo": userinfo})
 
-def my_image(request):
-    return render(request, 'account/imagecrop.html',)
 
 @login_required(login_url='/account/login/')
 def my_image(request):
