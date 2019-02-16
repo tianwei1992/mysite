@@ -45,7 +45,7 @@ def article_titles(request, username=None):
         articles = current_page.object_list
     if username:
         info_logger.info('[public visit]auhor_article_titles ip:{} author:{} page:{}'.format(ip, request.user.username, current_page))
-        return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user":user})
+        return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user_to_show":user})
     else:
         info_logger.info('[public visit]article_titles ip:{} visitor:{} page:{} ua:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
         return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page})
