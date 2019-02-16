@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row  vertical-middle-sm">
+这里一共有<strong>{{ comments_cnt }}</strong> 条评论，<strong>{{ applauds_cnt }}</strong> 条喜欢。
+
+<h1>评论</h1>
+<ol>
+{% for comment in comments %}
+    <li>
+    <strong>{{ comment.commentator }}</strong> 评论了 <strong> <a href="{{comment.article.get_url_path}}">《{{ comment.article.title }}》</a> </strong>："{{ comment.body }}"
+    </li>
+{% endfor %}
+</ol>
+
+<h1>喜欢</h1>
+<ol>
+{% for applaud in applauds %}
+    <li>
+    <strong>{{ applaud.applauder.username }}</strong> 喜欢了 <strong> <a href="{{applaud.article.get_url_path}}">《{{ applaud.article}}》 </a> </strong> 
+    </li>
+{% endfor %}
+</ol>
+
+</div>
+
+{% endblock %}
+

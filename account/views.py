@@ -98,3 +98,17 @@ def my_image(request):
         return HttpResponse("1")
     else:
         return render(request, 'account/imagecrop.html',)
+
+
+@login_required(login_url='/account/login/')
+def my_messages(request):
+    my_articles = request.user.article.all()
+    my_comments = []
+    [my_comments.extend(article.comments.all()) for article in my_articles]
+    my_comments.sort(key=lambda t:t.created, reverse=True)
+
+    applauds=[]
+    [applauds.extend(article.applauds.all()) for article in my_articles]
+    applauds.sort(key=lambda t:t.created, reverse=True)    
+
+    return render(request, 'account/my_messages.html', {"comments":my_comments,"comments_cnt":len(my_comments), "applauds": applauds, "applauds_cnt":len(applauds)})

@@ -4,7 +4,7 @@ logger = logging.getLogger('mysite.error')
 info_logger = logging.getLogger('mysite.article.info')
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import ArticleColumn, ArticlePost, Comment
+from .models import ArticleColumn, ArticlePost, Comment, Applaud
 from .forms import CommentForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -89,9 +89,18 @@ def like_article(request):
                 article = ArticlePost.objects.get(id=article_id)
                 if action == "like":
                     article.users_like.add(request.user)
+                    # save it to a new Applaud() including created_time
+                    new_applaud = Applaud()
+                    new_applaud.applauder = request.user
+                    new_applaud.article = article
+                    new_applaud.save()
                     return HttpResponse("1")
                 else:
                     article.users_like.remove(request.user)
+                    # remove it from Applaud model
+                    applaud = Applaud.objects.filter(applauder=request.user, article=article)
+                    if applaud:
+                        applaud.delete()
                     return HttpResponse("2")
             except Exception as e:
                 logger.error(traceback.print_exc())
