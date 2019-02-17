@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from .forms import LoginForm, RegistrationForm, UserProfileForm, UserForm, UserInfoForm
+from .forms import LoginForm, RegistrationForm, UserProfileForm, UserForm, UserInfoForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import UserProfile, UserInfo
@@ -120,3 +120,23 @@ def my_messages(request):
     applauds.sort(key=lambda t:t.created, reverse=True)    
 
     return render(request, 'account/my_messages.html', {"comments":my_comments,"comments_cnt":len(my_comments), "applauds": applauds, "applauds_cnt":len(applauds)})
+
+@login_required(login_url='/account/login/')
+def password_change(request):
+    if request.method == "POST":
+        user_form = PasswordChangeForm(request.POST)
+        if user_form.is_valid():
+            cd = user_form.cleaned_data
+            user = authenticate(username=request.user.username, password=cd["old_password"])
+            if user:
+                user.set_password(cd['new_password2'])
+                user.save()
+                return render(request, 'account/password_change_done.html',)
+            else:
+                return render(request, "account/password_change_fail.html", {"mistake":"旧密码输入错误"})
+        else:
+            return render(request, "account/password_change_fail.html", {"mistake":"两次输入密码不一致"})
+    else:
+        # user_form = UserForm(instance=request.user)
+        user_form = PasswordChangeForm()
+        return render(request, "account/password_change_form.html", {"form":user_form})

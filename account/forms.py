@@ -20,6 +20,17 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match.")
         return cd['password2']
 
+class PasswordChangeForm(forms.Form):
+    old_password = forms.CharField(label="Old Password", widget=forms.PasswordInput)
+    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label="Confirm New Password", widget=forms.PasswordInput)
+
+    def clean_new_password2(self):
+        cd = self.cleaned_data
+        if cd['new_password1'] != cd['new_password2']:
+            raise forms.ValidationError("Passwords do not match.")
+        return cd['new_password2']
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
