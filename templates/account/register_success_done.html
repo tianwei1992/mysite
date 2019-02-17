@@ -1,8 +1,7 @@
-<DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>注册成功！</title>
+ {% extends "base.html" %}
+ {% block title %}恭喜~注册成功！{% endblock %}
+ {% block content %}
+
 <script>
 var time=5;
 var timer=setInterval('tiaozhuan()',1000);
@@ -17,10 +16,8 @@ location.href="{% url 'account:user_login' %}";
 }
 }
 </script>
-</head>
 
-<body>
 <p>注册成功！<font id="id8" >5</font>秒后跳转登录页……<a href="{% url 'account:user_login' %}" >点击我直接跳转</a></p>
-</body>
-</html>
+
+{% endblock %}
 
