@@ -148,7 +148,7 @@ $(function(){
         $.ajax({
             url:"{% url 'article:like_article' %}",
             type:"POST",
-            data:{"id":id, "action":action},
+            data:{"id":id, "action":action, "article_url":window.location.href},
             success:function(e){
                 if(e=="1"){
                 layer.msg("感谢点赞");

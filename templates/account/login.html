@@ -31,6 +31,7 @@
         {% if form.errors %}
         <p><strong>Login Fail</strong>：用户名和密码不匹配呢，请重新输入~</p>
         {% endif %}
+      <input type="hidden" name="next" value="{{ next }}">
       <input type="submit" class="btn btn-primary btn-lg"value="Login">
    </form>
 

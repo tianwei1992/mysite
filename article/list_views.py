@@ -106,4 +106,5 @@ def like_article(request):
                 logger.error(traceback.print_exc())
                 return HttpResponse("no")
     else:
-        return HttpResponse('/account/new-login/?next=%s' % request.path)
+        article_path = request.POST.get("article_url")
+        return HttpResponse('/account/new-login/?next=%s' % article_path)
