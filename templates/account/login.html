@@ -3,26 +3,41 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="row text-center vertical-middle-sm">
+
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>抱歉，你不能访问这个页面，换个账号呢~~</p>
+    {% else %}
+    <p><strong>你还没有登录呢~ヾ(●´∀｀●) </strong></p>
+    {% endif %}
+{% endif %}
+
+<div class="row text-center vertical-middle-sm" >
     <h1>Login</h1>
-    <p>Input username and password</p>
-    <form class="form-horizontal" action="." method="post">{% csrf_token %}
+    <br>
+    <form class="form-horizontal" action="." method="post" style="background-color: #f6f6f6;
+    border-color: #F5F1C7;">{% csrf_token %}
        <!-- {{ form.as_p}}-->
        <div class="form-group">
-             <label for="{{ form.username.id_for_lable }}" class="col-md-5 control-label" style="color:red"><span class="glyphicon glyphicon-user"></span>Username</label>
+             <label for="{{ form.username.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Username</label>
         <div class="col-md-6 text-left">{{ form.username }}</div>
       </div>
 
      <div class="form-group">
-             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Password</label>
+             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-lock"></span>Password</label>
         <div class="col-md-6 text-left">{{ form.password }}</div>
         </div>
+        {% if form.errors %}
+        <p><strong>Login Fail</strong>：用户名和密码不匹配呢，请重新输入~</p>
+        {% endif %}
       <input type="submit" class="btn btn-primary btn-lg"value="Login">
    </form>
 
+    <br>
     <!--copy from templates/registration/login.html-->
-       <p style="margin-top:10px">Forgot your Password?<a href="{% url 'account:password_reset' %}">reset password</a></p>
-   <p style="margin-top:20px">If you had not ad username,<a href="{% url 'account:register' %}">Register to be a user</a>,please</p>
+       <p style="margin-top:10px">忘记密码了?<a href="{% url 'account:password_reset' %}">重置密码</a></p>
+   <p style="margin-top:20px">什么，还没有注册！<a href="{% url 'account:register' %}">点我注册</a></p>
 
 </div>
 
