@@ -38,7 +38,7 @@ def register(request):
             new_profile.user = new_user
             new_profile.save()
             UserInfo.objects.create(user=new_user)
-            return HttpResponseRedirect(reverse("account:user_login"))
+            return render(request, 'account/register_success_done.html',)
         else:
             error_dict = {}
             error_dict.update(user_form.errors.as_data())

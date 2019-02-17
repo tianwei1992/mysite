@@ -4,40 +4,44 @@
 
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h1>Register</h1>
-    <p>If you are a user, <strong><a href="{% url 'account:user_login' %}">Login </a></strong>, please</p>
-    <p>or register. </p>
+    <h1>新用户注册</h1>
+    <br>
+    <p>已有账号？  请<strong><a href="{% url 'account:user_login' %}">点我登录</a></strong></p>
     <form class="form-horizontal" action="." method="post">{% csrf_token %}
        <!-- {{ form.as_p}}-->
        <div class="form-group">
-             <label for="{{ form.username.id_for_lable }}" class="col-md-5 control-label" style="color:red"><span class="glyphicon glyphicon-user"></span>Username</label>
+             <label for="{{ form.username.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Username</label>
         <div class="col-md-6 text-left">{{ form.username }}</div>
       </div>
 
-       <div class="form-group">
-             <label for="{{ form.email.id_for_lable }}" class="col-md-5 control-label" style="color:red"><span class="glyphicon glyphicon-user"></span>Email</label>
-        <div class="col-md-6 text-left">{{ form.email }}</div>
-      </div>
 
      <div class="form-group">
-             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Password</label>
+             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-lock"></span>Password</label>
         <div class="col-md-6 text-left">{{ form.password }}</div>
         </div>
 
      <div class="form-group">
-             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Confirm Password</label>
+             <label for="{{ form.password.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-lock"></span>Confirm Password</label>
         <div class="col-md-6 text-left">{{ form.password2 }}</div>
         </div>
 
+       <div class="form-group">
+             <label for="{{ form.email.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-envelope"></span>Email</label>
+        <div class="col-md-6 text-left">{{ form.email }}</div>
+      </div>
+
+
      <div class="form-group">
-             <label for="{{ profile.birth.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Birth Date</label>
+             <label for="{{ profile.phone.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-earphone"></span>Phone(Optional)</label>
+        <div class="col-md-6 text-left">{{ profile.phone}}</div>
+        </div>
+
+    
+     <div class="form-group">
+             <label for="{{ profile.birth.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-star"></span>Birth Date(Optional)</label>
         <div class="col-md-6 text-left">{{ profile.birth}}</div>
         </div>
 
-     <div class="form-group">
-             <label for="{{ profile.phone.id_for_lable }}" class="col-md-5 control-label" style="color:blue"><span class="glyphicon glyphicon-user"></span>Phone</label>
-        <div class="col-md-6 text-left">{{ profile.phone}}</div>
-        </div>
       <input type="submit" class="btn btn-primary btn-lg"value="Register">
    </form>
 </div>
