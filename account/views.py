@@ -40,7 +40,15 @@ def register(request):
             UserInfo.objects.create(user=new_user)
             return HttpResponseRedirect(reverse("account:user_login"))
         else:
-            return HttpResponse("Sorry, you can not register.")
+            error_dict = {}
+            error_dict.update(user_form.errors.as_data())
+            error_dict.update(userprofile_form.errors.as_data())
+            hints_dict = {"password" :"两次输入密码不一致",
+                          "password2": "两次输入密码不一致",
+                          "birth": "1900-01-01"}
+            fields_convert_dict = {"password2":"密码", "birth":"生日"}
+            error_message = '<br>'.join(["请检查["+ (fields_convert_dict.get(k) if fields_convert_dict.get(k) else k) + "], (提示:" + hints_dict.get(k) + ")" for k in error_dict])
+            return HttpResponse("<strong>抱歉，注册没有成功o(╥﹏╥)o</strong> <br>{}".format(error_message))
     else:
         user_form = RegistrationForm()
         userprofile_form = UserProfileForm()
