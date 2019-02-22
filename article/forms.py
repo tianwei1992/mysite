@@ -20,3 +20,10 @@ class ArticleTagForm(forms.ModelForm):
     class Meta:
         model = ArticleTag
         fields = ("tag", )
+
+class SearchForm(forms.Form):
+    choices = [('author', '作者'), ('title','标题'), ('content','内容'), ('all', '不限')]
+    by_which = forms.ChoiceField(widget=forms.Select,choices=choices, required=True) 
+    keywords = forms.CharField(required=True, max_length=50, strip=True)
+    date_st = forms.DateField(widget=forms.SelectDateWidget)
+    date_ed = forms.DateField(widget=forms.SelectDateWidget)

@@ -1,3 +1,4 @@
+import json
 import traceback
 import logging
 logger = logging.getLogger('mysite.error')
@@ -5,7 +6,7 @@ info_logger = logging.getLogger('mysite.article.info')
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ArticleColumn, ArticlePost, Comment, Applaud
-from .forms import CommentForm
+from .forms import CommentForm, SearchForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -23,6 +24,7 @@ r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, passwo
 def article_titles(request, username=None):
     ip = get_visitor_ip(request)
     ua = get_useragent(request)
+    search_form = SearchForm()
     if username:
         user =  User.objects.get(username=username)
         article_titles = ArticlePost.objects.filter(author=user)
@@ -48,7 +50,7 @@ def article_titles(request, username=None):
         return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user_to_show":user})
     else:
         info_logger.info('[public visit]article_titles ip:{} visitor:{} page:{} ua:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
-        return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page})
+        return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page,"search_form": search_form})
 
 def article_detail(request, id, slug):
     ip = get_visitor_ip(request)
@@ -108,3 +110,26 @@ def like_article(request):
     else:
         article_path = request.POST.get("article_url")
         return HttpResponse('/account/new-login/?next=%s' % article_path)
+
+@require_POST
+def article_search(request, username=None):
+    ip = get_visitor_ip(request)
+    ua = get_useragent(request)
+    search_form = SearchForm(data=request.POST)
+    if search_form.is_valid():
+        cd = search_form.cleaned_data
+        for (k, v) in cd:
+            if v == True:
+                break
+        # get the filter by k
+        articles_list = search_articles_by(k);
+        if articles:
+            flg = 1
+        else:
+            flg = 0
+        res = {"status": flg}
+        res.update({"articles": articles_list})
+        return HttpResponse(json.dumps(res))
+
+        
+             

@@ -5,9 +5,21 @@
 
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h1>在小时候的黄昏见</h1>
-    <p>本站现有{% total_articles %}篇文章，欢迎阅读~</p>
+    <h1>文章列表</h1>
+    
+    <p> 
+    <form action="." method="POST" class="form-horizontal" role="form">{% csrf_token %}
+    <!--<span style="margin-left:20px" class="glyphicon glyphicon-search"></span>-->
+{{ search_form.keywords }}  按{{ search_form.by_which }}      开始日期{{ search_form.date_st }} 结束日期{{ search_form.date_ed }}
+    <input type="submit" name="" value="开始搜索" class="btn btn-primary">
+    </form>
+
+</p>
 </div>
+
+<div>
+</div>
+
 
 <div class="container">
     {% for article in articles %}
@@ -19,6 +31,8 @@
                 <p class="list-group-item-text">概要：{{ article.body|slice:'80'|linebreaks }}</p>
         </div>
     {% endfor %}
-{% include "paginator.html" %}
+
+<strong>{% total_articles %}</strong> Articles Total,
+{% include "paginator.html" %} 
 </div>
 {% endblock %}
