@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 import redis
 from django.conf import settings
 from django.db.models import Count
+from .get_db_datas import search_articles_by
 
 import sys,os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -116,20 +117,26 @@ def article_search(request, username=None):
     ip = get_visitor_ip(request)
     ua = get_useragent(request)
     search_form = SearchForm(data=request.POST)
+    articles_list = []
     if search_form.is_valid():
         cd = search_form.cleaned_data
-        for (k, v) in cd:
-            if v == True:
-                break
-        # get the filter by k
-        articles_list = search_articles_by(k);
-        if articles:
+        if cd:
+            by_which = cd['by_which']
+            keywords = cd['keywords']
+            date_st = cd['date_st']
+            date_ed = cd['date_ed']
+        # get a query_set by k
+        articles_list = search_articles_by(by_which, keywords, date_st, date_ed);
+        if articles_list:
             flg = 1
         else:
-            flg = 0
-        res = {"status": flg}
-        res.update({"articles": articles_list})
-        return HttpResponse(json.dumps(res))
+            flg = 2
+    else:
+        flg = 0
+    res = {"status": flg}
+    article_info_list = [(article.title, article.author.username, article.body[:80]) for article in articles_list]
+    res.update({"articles": article_info_list})
+    return HttpResponse(json.dumps(res))
 
         
              

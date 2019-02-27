@@ -1,6 +1,7 @@
 *.out
 *.swp
 *.swo
+*.swn
 *.sqlite3
 __pycache__
 migrations/

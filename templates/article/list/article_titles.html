@@ -8,13 +8,14 @@
     <h1>文章列表</h1>
     
     <p> 
-    <form action="." method="POST" class="form-horizontal" role="form">{% csrf_token %}
+    <form id="form1" action="{% url 'article:article_search' %}" method="POST" class="form-horizontal" role="form">{% csrf_token %}
     <!--<span style="margin-left:20px" class="glyphicon glyphicon-search"></span>-->
 {{ search_form.keywords }}  按{{ search_form.by_which }}      开始日期{{ search_form.date_st }} 结束日期{{ search_form.date_ed }}
-    <input type="submit" name="" value="开始搜索" class="btn btn-primary">
-    </form>
 
-</p>
+    </p>
+     <p class="text-center">
+            <a onclick="start_search({{ article.id }})" href="#"><span class="glyphicon glyphicon-search">开始搜索</span></a>
+    </p>
 </div>
 
 <div>
@@ -35,4 +36,31 @@
 <strong>{% total_articles %}</strong> Articles Total,
 {% include "paginator.html" %} 
 </div>
+
+
+<script type="text/javascript">
+    function start_search(article_id){
+         $.ajaxSetup({
+      data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+ });
+        $.ajax({
+            url:"{% url 'article:article_search' %}",
+            type:"POST",
+            data: $('#form1').serialize(),
+            success:function(r){
+                e=r['status']
+                if(e=="1"){
+                layer.msg("感谢点赞");
+                window.location.reload();
+                }else if(e=="2"){
+                layer.msg("我会继续努力");
+                window.location.reload();
+                }else{
+                layer.msg("怎么了");
+                window.location.assign(e);
+}
+        },
+    });
+}
+</script>
 {% endblock %}
