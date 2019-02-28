@@ -119,6 +119,7 @@ def article_search(request, username=None):
     search_form = SearchForm(data=request.POST)
     articles_list = []
     if search_form.is_valid():
+        flg = 1
         cd = search_form.cleaned_data
         if cd:
             by_which = cd['by_which']
@@ -127,14 +128,10 @@ def article_search(request, username=None):
             date_ed = cd['date_ed']
         # get a query_set by k
         articles_list = search_articles_by(by_which, keywords, date_st, date_ed);
-        if articles_list:
-            flg = 1
-        else:
-            flg = 2
     else:
         flg = 0
     res = {"status": flg}
-    article_info_list = [(article.title, article.author.username, article.body[:80]) for article in articles_list]
+    article_info_list = [(article.title, article.author.username, article.author.username, article.get_url_path(), article.body[:80]) for article in articles_list]
     res.update({"articles": article_info_list})
     return HttpResponse(json.dumps(res))
 
