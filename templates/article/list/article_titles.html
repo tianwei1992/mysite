@@ -9,6 +9,7 @@
     
     <p> 
     <form id="form1" action="{% url 'article:article_search' %}" method="POST" class="form-horizontal" role="form">{% csrf_token %}
+    <input type="text" style="display:none">
     <!--<span style="margin-left:20px" class="glyphicon glyphicon-search"></span>-->
 搜索关键字{{ search_form.keywords }}  按{{ search_form.by_which }}   开始日期{{ search_form.date_st }} 结束日期{{ search_form.date_ed }}
 
