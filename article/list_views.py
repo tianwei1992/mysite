@@ -80,7 +80,10 @@ def article_detail(request, id, slug):
     elif request.method == "GET":
         comment_form = CommentForm()
         info_logger.info('[public visit]article_detail ip:{} visitor:{} title:{} views:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
-    return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles})
+    cur_user = None
+    if request.user.is_authenticated:
+        cur_user = request.user 
+    return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles, "cur_user": cur_user})
 
 @require_POST
 def like_article(request):

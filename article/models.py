@@ -62,6 +62,16 @@ class Comment(models.Model):
     def __str__(self):
         return "Comment by {0} on {1}".format(self.commentator.username, self.article)
 
+class UserComment(models.Model):
+    article = models.ForeignKey(ArticlePost, related_name="user_comments", on_delete="CASCADE")
+    commentator= models.ForeignKey(User, related_name="user_comments", on_delete="CASCADE")
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ('-created',)
+    def __str__(self):
+        return "Comment by {0} on {1}".format(self.commentator.username, self.article)
+
 
 class Applaud(models.Model):
     article = models.ForeignKey(ArticlePost, related_name="applauds", on_delete="CASCADE")
