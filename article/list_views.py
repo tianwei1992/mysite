@@ -5,8 +5,8 @@ logger = logging.getLogger('mysite.error')
 info_logger = logging.getLogger('mysite.article.info')
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import ArticleColumn, ArticlePost, Comment, Applaud
-from .forms import CommentForm, SearchForm
+from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
+from .forms import UserCommentForm, CommentForm, SearchForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -70,17 +70,37 @@ def article_detail(request, id, slug):
     similar_articles = ArticlePost.objects.filter(article_tag__in=article_tags).exclude(id=article.id)
     similar_articles = similar_articles.annotate(same_tags=Count("article_tag")).order_by('-same_tags', '-created')[:4]
     if request.method == "POST":
-        comment_form = CommentForm(data=request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.article = article
-            new_comment.save()
+        if request.POST.get("if_as_login"):
+        # if comment as a login user, comments are saved in UserComment
+            body = request.POST.get("body")
+            if request.user.is_authenticated and body:   
+                new_comment = UserComment()
+                new_comment.article = article
+                new_comment.body = body
+                new_comment.commentator = request.user
+                new_comment.save()
+            else:
+                return HttpResposnse(" Not Allowd, login first,please")
         else:
-            logger.error(traceback.print_exc())
+        # comment as a  visitor, comments are saved in Comment
+            comment_form = CommentForm(data=request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.article = article
+                new_comment.save()
+            else:
+                info_logger.info("表单无效:{}".format(comment_form.errors))
+                logger.error(traceback.print_exc())
     elif request.method == "GET":
-        comment_form = CommentForm()
         info_logger.info('[public visit]article_detail ip:{} visitor:{} title:{} views:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
-    return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles})
+
+    # starting to return...
+    cur_user = None
+    if request.user.is_authenticated:
+        cur_user = request.user 
+    comment_form = CommentForm()
+
+    return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles, "cur_user": cur_user})
 
 @require_POST
 def like_article(request):

@@ -5,7 +5,8 @@
 {% block title %}article detail {% endblock %}
 {% block content %}
 
-{% with total_likes=article.users_like.count users_like=article.users_like.all %}
+{% with total_likes=article.users_like.count users_like=article.users_like.all user_comments_count=article.user_comments.count comments_count=article.comments.count %}
+
 
 <div class="container">
 <div class="col-md-9">
@@ -47,22 +48,40 @@
 
 <hr>
 <div>
-    <h3><span class="glyphicon glyphicon-bullhorn"></span> 本文有{{ article.comments.count }}评论</h3>
-    {% for comment in article.comments.all %}
+    <h3><span class="glyphicon glyphicon-bullhorn"></span> 本文有{{ article.comments.count|add:user_comments_count }}评论</h3>
+    {% if comments_count or user_comments_count %}
+    {% for comment in article.user_comments.all %}
     <div>
-        <p><strong>{{ comment.commentator }}</strong>说：</p>
+        <p>
+
+           <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="空" src="{{ comment.commentator.userinfo.photo }}"></a>
+            <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
-    {% empty %}
-    <p>没有评论</p>
     {% endfor %}
+    {% for comment in article.comments.all %}
+    <div>
+        <p>
+           <img width="35" height="35" alt="匿名用户" src="{% static 'images/anomynous.jpg' %}"></a>
+         <strong>{{ comment.commentator }}</strong>说：</p>
+        <p style="margin-left:40px;">{{ comment.body }}</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>没有评论</p>
+    {% endif %}
 
     <h3><span class="glyphicon glyphicon-send"></span> 我有话要说……</h3>
-    <form action="." method="POST" class="form-horizontal" role="form">{% csrf_token %}
-        <div class="form-group">
+    <form action="." method="POST" class="form-horizontal" role="form" >{% csrf_token %}
+        <div class="form-group" id="louzhu">
             <label for="inputEmail3" class="col-sm-2 control-label">楼主</label>
             <div class="col-sm-10">
                 {{ comment_form.commentator }}
+                {% if cur_user %}
+                    <font id="login_commentator" style="display:none;font-size:120%;color:lightblue;" nowrap> {{ cur_user.username }} &nbsp </font>
+                    <input id="ck1" type="checkbox" name="if_as_login" value="1" onclick="checkboxOnclick(this)">
+                    是否以{{ cur_user.username }}身份发表？
+                {% endif %}
             </div>
         </div>
         <div class="form-group">
@@ -73,7 +92,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <p><input type="submit" name="" value="发布评论" class="btn btn-primary"></p>
+                <p><input type="submit" name="" value="发布评论" class="btn btn-primary" onclick="removeRequire()" ></p>
             </div>
         </div>
     </form>
@@ -161,6 +180,29 @@ $(function(){
 }
         },
     });
+}
+
+function checkboxOnclick(checkbox){
+    var commentator = document.getElementsByName('commentator')[0];
+    var login_commentator = document.getElementById('login_commentator');
+    var div_louzhu = document.getElementById('louzhu');
+    
+    if(document.getElementById("ck1").checked){
+    login_commentator.style.display="";
+    commentator.style.display="none";
+    commentator.required="False";
+    }
+    else
+        {
+    commentator.style.display="";
+    login_commentator.style.display="none";
+
+}
+}
+
+function removeRequire(){
+    document.getElementById("id_commentator").required = false;//avoiding element unfocus error when submit
+
 }
 </script>
 {% endwith %}
