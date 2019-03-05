@@ -5,7 +5,7 @@
 {% block title %}article detail {% endblock %}
 {% block content %}
 
-{% with total_likes=article.users_like.count users_like=article.users_like.all user_comments_count=article.user_comments.count total_comments_count=article.comments.count %}
+{% with total_likes=article.users_like.count users_like=article.users_like.all user_comments_count=article.user_comments.count comments_count=article.comments.count %}
 
 
 <div class="container">
@@ -49,16 +49,21 @@
 <hr>
 <div>
     <h3><span class="glyphicon glyphicon-bullhorn"></span> 本文有{{ article.comments.count|add:user_comments_count }}评论</h3>
-    {% if total_comments_count %}
-    {% for comment in article.comments.all %}
+    {% if comments_count or user_comments_count %}
+    {% for comment in article.user_comments.all %}
     <div>
-        <p><strong>{{ comment.commentator }}</strong>说：</p>
+        <p>
+
+           <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="空" src="{{ comment.commentator.userinfo.photo }}"></a>
+            <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
     {% endfor %}
-    {% for comment in article.user_comments.all %}
+    {% for comment in article.comments.all %}
     <div>
-        <p><strong>{{ comment.commentator }}</strong>说：</p>
+        <p>
+           <img width="35" height="35" alt="匿名用户" src="{% static 'images/anomynous.jpg' %}"></a>
+         <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
     {% endfor %}
@@ -67,7 +72,7 @@
     {% endif %}
 
     <h3><span class="glyphicon glyphicon-send"></span> 我有话要说……</h3>
-    <form action="." method="POST" class="form-horizontal" role="form">{% csrf_token %}
+    <form action="." method="POST" class="form-horizontal" role="form" >{% csrf_token %}
         <div class="form-group" id="louzhu">
             <label for="inputEmail3" class="col-sm-2 control-label">楼主</label>
             <div class="col-sm-10">
@@ -87,7 +92,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <p><input type="submit" name="" value="发布评论" class="btn btn-primary"></p>
+                <p><input type="submit" name="" value="发布评论" class="btn btn-primary" onclick="removeRequire()" ></p>
             </div>
         </div>
     </form>
@@ -193,6 +198,11 @@ function checkboxOnclick(checkbox){
     login_commentator.style.display="none";
 
 }
+}
+
+function removeRequire(){
+    document.getElementById("id_commentator").required = false;//avoiding element unfocus error when submit
+
 }
 </script>
 {% endwith %}
