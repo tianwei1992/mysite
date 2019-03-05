@@ -16,11 +16,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ("commentator", "body")
 
-class UserCommentForm(forms.ModelForm):
-    class Meta:
-        model = UserComment
-        fields = ("commentator", "body")
-
 class ArticleTagForm(forms.ModelForm):
     class Meta:
         model = ArticleTag

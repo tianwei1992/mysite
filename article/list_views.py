@@ -6,7 +6,7 @@ info_logger = logging.getLogger('mysite.article.info')
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
-from .forms import UserCommentForm, CommentForm, SearchForm
+from .forms import  CommentForm, SearchForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST

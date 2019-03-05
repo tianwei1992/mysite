@@ -54,7 +54,7 @@
     <div>
         <p>
 
-           <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="空" src="{{ comment.commentator.userinfo.photo }}"></a>
+           <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="害羞的用户" src="{{ comment.commentator.userinfo.photo }}"></a>
             <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
@@ -62,7 +62,7 @@
     {% for comment in article.comments.all %}
     <div>
         <p>
-           <img width="35" height="35" alt="匿名用户" src="{% static 'images/anomynous.jpg' %}"></a>
+           <img width="35" height="35" alt="游客" src="{% static 'images/anomynous.jpg' %}">
          <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
