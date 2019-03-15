@@ -19,11 +19,13 @@ import sys,os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 from utils.get_client_infos import get_visitor_ip, get_useragent
+from utils.get_ip_infos import get_location_from_ip
 
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
 def article_titles(request, username=None):
     ip = get_visitor_ip(request)
+    ip_infos = get_location_from_ip(ip)
     ua = get_useragent(request)
     search_form = SearchForm()
     if username:
@@ -47,14 +49,15 @@ def article_titles(request, username=None):
         current_page = paginator.page(paginator.num_pages)
         articles = current_page.object_list
     if username:
-        info_logger.info('[public visit]auhor_article_titles ip:{} author:{} page:{}'.format(ip, request.user.username, current_page))
+        info_logger.info('[public visit]auhor_article_titles ip:{}[{}] author:{} page:{}'.format(ip, ip_infos, request.user.username, current_page))
         return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user_to_show":user})
     else:
-        info_logger.info('[public visit]article_titles ip:{} visitor:{} page:{} ua:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
+        info_logger.info('[public visit]article_titles ip:{}[{}] visitor:{} page:{} ua:{}'.format(ip, ip_infos,  request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
         return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page,"search_form": search_form})
 
 def article_detail(request, id, slug):
     ip = get_visitor_ip(request)
+    ip_infos = get_location_from_ip(ip)
     ua = get_useragent(request)
 
     article = get_object_or_404(ArticlePost, id=id, slug=slug)
@@ -92,7 +95,7 @@ def article_detail(request, id, slug):
                 info_logger.info("表单无效:{}".format(comment_form.errors))
                 logger.error(traceback.print_exc())
     elif request.method == "GET":
-        info_logger.info('[public visit]article_detail ip:{} visitor:{} title:{} views:{}'.format(ip, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
+        info_logger.info('[public visit]article_detail ip:{}[{}] visitor:{} title:{} views:{}'.format(ip, ip_infos, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
 
     # starting to return...
     cur_user = None
@@ -135,6 +138,7 @@ def like_article(request):
 @require_POST
 def article_search(request, username=None):
     ip = get_visitor_ip(request)
+    ip_infos = get_location_from_ip(ip)
     ua = get_useragent(request)
     search_form = SearchForm(data=request.POST)
     articles_list = []
