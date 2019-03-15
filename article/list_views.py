@@ -19,13 +19,13 @@ import sys,os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 from utils.get_client_infos import get_visitor_ip, get_useragent
-from utils.get_ip_infos import get_location_from_ip
+from utils.get_ip_infos import get_location_calling_free_api
 
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
 def article_titles(request, username=None):
     ip = get_visitor_ip(request)
-    ip_infos = get_location_from_ip(ip)
+    ip_infos = get_location_calling_free_api(ip)
     ua = get_useragent(request)
     search_form = SearchForm()
     if username:
@@ -57,7 +57,7 @@ def article_titles(request, username=None):
 
 def article_detail(request, id, slug):
     ip = get_visitor_ip(request)
-    ip_infos = get_location_from_ip(ip)
+    ip_infos = get_location_calling_free_api(ip)
     ua = get_useragent(request)
 
     article = get_object_or_404(ArticlePost, id=id, slug=slug)
@@ -138,7 +138,7 @@ def like_article(request):
 @require_POST
 def article_search(request, username=None):
     ip = get_visitor_ip(request)
-    ip_infos = get_location_from_ip(ip)
+    ip_infos = get_location_calling_free_api(ip)
     ua = get_useragent(request)
     search_form = SearchForm(data=request.POST)
     articles_list = []

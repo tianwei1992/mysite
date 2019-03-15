@@ -2,6 +2,7 @@
 Update: 2019.03.15 
 获取IP相关信息
 """
+import re
 import logging
 import requests
 import time
@@ -16,12 +17,12 @@ DEFAULT_HEADERS =  {
 }
 
 
-def get_res(url, request_method, form_data, headers=DEFAULT_HEADERS):
+def get_res(url, request_method, form_data=None, headers=DEFAULT_HEADERS):
     if request_method == "get":
         res = requests.get(url, headers=headers)
     elif request_method == "post":
         res = requests.post(url, headers=headers, data=form_data)
-    time.sleep(1)   
+    time.sleep(0.5)   
 
     text = None
     try:
@@ -82,7 +83,24 @@ def get_location_from_ip(ip_addr):
     return ip_infos
 
 
+def get_location_calling_free_api(ip_addr):
+    """调用免费的接口
+       请求http://freeapi.ipip.net/117.115.44.90
+       接口返回的是长度为4的列表，形如["中国","四川","成都","","移动"]"""
+    url_api = "http://freeapi.ipip.net/"+ip_addr
+    request_method = "get"
+    res_text  = get_res(url_api, request_method)
+    pat = re.compile('\"(.*?)\"')
+    res_list = pat.findall(res_text)
+    country, province, city, town, carrier = res_list
+    city = country + province + city + town
+    ip_infos = {"city": city, "carrier": carrier}
+    return ip_infos
+    
+
+
 if __name__ == "__main__":
     ip_addr = "65.52.175.85"
-    ip_infos = get_location_from_ip(ip_addr)
+    # ip_infos = get_location_from_ip(ip_addr) 被封了
+    ip_infos = get_location_calling_free_api(ip_addr)
     print(ip_addr, ip_infos)
