@@ -87,7 +87,11 @@ def get_location_calling_free_api(ip_addr):
     """调用免费的接口
        请求http://freeapi.ipip.net/117.115.44.90
        接口返回的是长度为4的列表，形如["中国","四川","成都","","移动"]"""
-    url_api = "http://freeapi.ipip.net/"+ip_addr
+    # 先拆分出真正的客户端Ip,例如"117.176.9.89, 161.117.143.161"
+    pat = re.compile("(\d+.){3}\d+")
+    ip = pat.match(ip_addr.strip()).group()
+
+    url_api = "http://freeapi.ipip.net/"+ip
     request_method = "get"
     res_text  = get_res(url_api, request_method)
     pat = re.compile('\"(.*?)\"')
@@ -100,7 +104,8 @@ def get_location_calling_free_api(ip_addr):
 
 
 if __name__ == "__main__":
-    ip_addr = "65.52.175.85"
+    ip_addrs = ["65.52.175.85", "117.176.9.89, 161.117.143.161"]
+    for ip_addr in ip_addrs:
     # ip_infos = get_location_from_ip(ip_addr) 被封了
-    ip_infos = get_location_calling_free_api(ip_addr)
-    print(ip_addr, ip_infos)
+        ip_infos = get_location_calling_free_api(ip_addr)
+        print(ip_addr, ip_infos)
