@@ -1,40 +1,38 @@
+import sys,os
 import json
 import traceback
 import logging
-logger = logging.getLogger('mysite.error')
-info_logger = logging.getLogger('mysite.article.info')
+import redis
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
-from .forms import  CommentForm, SearchForm
-from .tasks import start_logging
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-import redis
 from django.conf import settings
 from django.db.models import Count
+
+from utils.get_client_infos import get_visitor_ip, get_useragent
+from utils.get_ip_infos import get_location_calling_free_api
+from utils.get_client_infos import get_visitor_ip, get_useragent
+from utils.get_ip_infos import get_location_calling_free_api
+
+from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
+from .forms import  CommentForm, SearchForm
+from .tasks import start_logging
 from .get_db_datas import search_articles_by
 
 
-from utils.get_client_infos import get_visitor_ip, get_useragent
-from utils.get_ip_infos import get_location_calling_free_api
-
-import sys,os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
-from utils.get_client_infos import get_visitor_ip, get_useragent
-from utils.get_ip_infos import get_location_calling_free_api
+logger = logging.getLogger('mysite.error')
+info_logger = logging.getLogger('mysite.article.info')
 
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
-def article_titles(request, username=None):
-    ip = get_visitor_ip(request)
-    # ip_infos = get_location_calling_free_api(ip)
-    ua = get_useragent(request)
-    visitor = request.user.username if request.user.is_authenticated else "Anomynmous"
 
-    search_form = SearchForm()
+def article_titles(request, username=None):
+    """文章标题页，username指定某位作者的文章标题页，分页显示"""
+
     if username:
         """公共文章标题页"""
         user =  User.objects.get(username=username)
@@ -46,6 +44,7 @@ def article_titles(request, username=None):
     else:
         """指定用户文章标题页"""
         article_titles = ArticlePost.objects.all()
+
    # 分页 
     paginator = Paginator(article_titles, 2)
     page = request.GET.get("page") or '1'
@@ -60,6 +59,12 @@ def article_titles(request, username=None):
         current_page = paginator.page(paginator.num_pages)
         articles = current_page.object_list
 
+    # 提取客户端相关信息
+    ip = get_visitor_ip(request)
+    ua = get_useragent(request)
+    visitor = request.user.username if request.user.is_authenticated else "Anomynmous"
+    
+    # 开始记录日志
     if username:
         log_str = '[public visit]author_article_titles'
         start_logging.delay(log_str, ip=ip, username=visitor, ua=ua, Page=page, Author=username) 
@@ -69,6 +74,7 @@ def article_titles(request, username=None):
         log_str = '[public visit]article_titles'
         start_logging.delay(log_str,  ip=ip, username=visitor, ua=ua, Page=page) 
         # info_logger.info('[public visit]article_titles ip:{}[{}] visitor:{} page:{} ua:{}'.format(ip, ip_infos,  request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
+        search_form = SearchForm()
         return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page,"search_form": search_form})
 
 

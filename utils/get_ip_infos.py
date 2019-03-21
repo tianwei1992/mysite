@@ -1,7 +1,9 @@
 """
 Update: 2019.03.15 
-获取IP相关信息
+从IP获得IP相关信息
 """
+
+
 import re
 import logging
 import requests
@@ -22,7 +24,6 @@ def get_res(url, request_method, form_data=None, headers=DEFAULT_HEADERS):
         res = requests.get(url, headers=headers)
     elif request_method == "post":
         res = requests.post(url, headers=headers, data=form_data)
-    time.sleep(0.3)  # 加大延时可观察在IO耗时很长很长时的异步效果 
 
     text = None
     try:
@@ -89,15 +90,18 @@ def get_location_calling_free_api(ip_addr):
        接口返回的是长度为4的列表，形如["中国","四川","成都","","移动"]"""
     url_api = "http://freeapi.ipip.net/"+ip_addr
     request_method = "get"
+
+    time.sleep(0.3)  # 受到接口访问频率限制，间隔0.2s以上，加大延时也可作为测试，观察在IO耗时很长很长时的异步效果 
     res_text  = get_res(url_api, request_method)
+
     pat = re.compile('\"(.*?)\"')
     res_list = pat.findall(res_text)
     country, province, city, town, carrier = res_list
     city = country + province + city + town
+
     ip_infos = {"city": city, "carrier": carrier}
     return ip_infos
     
-
 
 if __name__ == "__main__":
     ip_addr = "65.52.175.85"
