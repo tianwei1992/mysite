@@ -22,7 +22,7 @@ def get_res(url, request_method, form_data=None, headers=DEFAULT_HEADERS):
         res = requests.get(url, headers=headers)
     elif request_method == "post":
         res = requests.post(url, headers=headers, data=form_data)
-    time.sleep(0.5)   
+    time.sleep(0.3)  # 加大延时可观察在IO耗时很长很长时的异步效果 
 
     text = None
     try:

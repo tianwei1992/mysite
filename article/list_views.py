@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
 from .forms import  CommentForm, SearchForm
+from .tasks import start_logging
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
@@ -14,6 +15,10 @@ import redis
 from django.conf import settings
 from django.db.models import Count
 from .get_db_datas import search_articles_by
+
+
+from utils.get_client_infos import get_visitor_ip, get_useragent
+from utils.get_ip_infos import get_location_calling_free_api
 
 import sys,os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,10 +30,13 @@ r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, passwo
 
 def article_titles(request, username=None):
     ip = get_visitor_ip(request)
-    ip_infos = get_location_calling_free_api(ip)
+    # ip_infos = get_location_calling_free_api(ip)
     ua = get_useragent(request)
+    visitor = request.user.username if request.user.is_authenticated else "Anomynmous"
+
     search_form = SearchForm()
     if username:
+        """公共文章标题页"""
         user =  User.objects.get(username=username)
         article_titles = ArticlePost.objects.filter(author=user)
         try:
@@ -36,10 +44,13 @@ def article_titles(request, username=None):
         except:
             userinfo = None
     else:
+        """指定用户文章标题页"""
         article_titles = ArticlePost.objects.all()
+   # 分页 
     paginator = Paginator(article_titles, 2)
-    page = request.GET.get("page")
+    page = request.GET.get("page") or '1'
     try:
+
         current_page = paginator.page(page)
         articles = current_page.object_list
     except PageNotAnInteger:
@@ -48,12 +59,18 @@ def article_titles(request, username=None):
     except EmptyPage:
         current_page = paginator.page(paginator.num_pages)
         articles = current_page.object_list
+
     if username:
-        info_logger.info('[public visit]auhor_article_titles ip:{}[{}] author:{} page:{}'.format(ip, ip_infos, request.user.username, current_page))
+        log_str = '[public visit]author_article_titles'
+        start_logging.delay(log_str, ip=ip, username=visitor, ua=ua, Page=page, Author=username) 
+        # info_logger.info('[public visit]auhor_article_titles ip:{}[{}] author:{} page:{}'.format(ip, ip_infos, request.user.username, current_page))
         return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user_to_show":user})
     else:
-        info_logger.info('[public visit]article_titles ip:{}[{}] visitor:{} page:{} ua:{}'.format(ip, ip_infos,  request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
+        log_str = '[public visit]article_titles'
+        start_logging.delay(log_str,  ip=ip, username=visitor, ua=ua, Page=page) 
+        # info_logger.info('[public visit]article_titles ip:{}[{}] visitor:{} page:{} ua:{}'.format(ip, ip_infos,  request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
         return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page,"search_form": search_form})
+
 
 def article_detail(request, id, slug):
     ip = get_visitor_ip(request)
