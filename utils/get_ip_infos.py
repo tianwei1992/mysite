@@ -3,15 +3,20 @@ Update: 2019.03.15
 从IP获得IP相关信息
 """
 
-
+import os, sys
 import re
 import logging
 import requests
 import time
 from lxml import etree, objectify
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+from req import get_res
+
 
 logger = logging.getLogger('mysite.error')
+"""
 DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
 DEFAULT_HEADERS =  {
     'user-agent': DEFAULT_UA, 
@@ -36,7 +41,7 @@ def get_res(url, request_method, form_data=None, headers=DEFAULT_HEADERS):
         logger.error(e)
         logger.error("请求失败,爬虫被封掉了？")
     return text
-
+"""
 
 def parse_infos(text):
     # parser = etree.XMLParser(remove_comments = True)
