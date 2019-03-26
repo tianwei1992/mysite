@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "image",
     "sorl.thumbnail",
     "course",
+    "mailapi",
 ]
 
 MIDDLEWARE = [
