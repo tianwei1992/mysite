@@ -73,6 +73,12 @@ LOGGING = {
             'filename': 'logs/article_infos.log',
             'formatter': 'simple'
         },
+        'mailapi_infos': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/mailapi_infos.log',
+            'formatter': 'simple'
+        },
         'image_infos': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
@@ -114,6 +120,11 @@ LOGGING = {
         },
         'mysite.article.info': {
             'handlers': ['article_infos', ],
+            'level': 'INFO', 
+            'propagate': False
+        },
+        'mysite.mailapi.info': {
+            'handlers': ['mailapi_infos', ],
             'level': 'INFO', 
             'propagate': False
         },
