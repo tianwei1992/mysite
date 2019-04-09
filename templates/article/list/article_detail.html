@@ -53,8 +53,11 @@
     {% for comment in article.user_comments.all %}
     <div>
         <p>
-
+            {% if comment.commentator.userinfo.photo %}
            <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="害羞的用户" src="{{ comment.commentator.userinfo.photo }}"></a>
+            {% else %}
+           <a href="{% url 'article:author_articles' comment.commentator.username %}"><img width="35" height="35" alt="害羞的用户" src="{% static 'images/anomynous.jpg' %}"></a>
+            {% endif %}
             <strong>{{ comment.commentator }}</strong>说：</p>
         <p style="margin-left:40px;">{{ comment.body }}</p>
     </div>
