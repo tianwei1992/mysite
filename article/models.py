@@ -1,9 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
-from slugify import slugify
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+
+from slugify import slugify
+
 
 # Create your models here.
 class ArticleColumn(models.Model):
@@ -57,8 +59,10 @@ class Comment(models.Model):
     commentator = models.CharField(max_length=90)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         ordering = ('-created',)
+
     def __str__(self):
         return "Comment by {0} on {1}".format(self.commentator.username, self.article)
 
@@ -67,8 +71,10 @@ class UserComment(models.Model):
     commentator= models.ForeignKey(User, related_name="user_comments", on_delete="CASCADE")
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         ordering = ('-created',)
+
     def __str__(self):
         return "Comment by {0} on {1}".format(self.commentator.username, self.article)
 
@@ -77,11 +83,14 @@ class Applaud(models.Model):
     article = models.ForeignKey(ArticlePost, related_name="applauds", on_delete="CASCADE")
     applauder = models.ForeignKey(User, related_name="applauds", on_delete="CASCADE")
     created = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         ordering = ('-created',)
         unique_together=("article","applauder")
+
     def __str__(self):
         return "Applaud by {0} on {1}".format(self.applauder.username, self.article)
+
     def save(self, *args, **kargs):
         try:    # applaud twice or more will affect nothing
             super(Applaud, self).save(*args, **kargs)

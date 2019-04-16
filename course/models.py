@@ -1,11 +1,13 @@
+from slugify import slugify
+
 from django.db import models
 from django.contrib.auth.models import User
 
-from slugify import slugify
+
 from .fields import OrderField
 
-# Create your models here.
 
+# Create your models here.
 class Course(models.Model):
     user = models.ForeignKey(User, related_name='course_user', on_delete=models.CASCADE)
     student = models.ManyToManyField(User, related_name='courses_joined', blank=True)
@@ -17,15 +19,17 @@ class Course(models.Model):
     class Meta:
         ordering=('-created',)
 
+    def __str__(self):
+        return self.title
+
     def save(self, *args, **kargs):
         self.slug = slugify(self.title)
         super(Course, self).save(*args, **kargs)
 
-    def __str__(self):
-        return self.title
 
 def user_directory_path(instance, filename):
     return "course/user_{}/{}".format(instance.user.id, filename)
+
 
 class Lesson(models.Model):
     user = models.ForeignKey(User, related_name='lesson_user', on_delete=models.CASCADE)
@@ -41,6 +45,9 @@ class Lesson(models.Model):
     class Meta:
         ordering=('order',)
 
+    def __str__(self):
+        return ('{}.{}'.format(self.order, self.title))
+
     def save(self, *args, **kwargs):
         if self.pk:
             this_record = Lesson.objects.get(pk=self.pk)
@@ -51,6 +58,4 @@ class Lesson(models.Model):
         self.slug = slugify(self.title)
         super(Lesson, self).save(*args, **kwargs)
 
-    def __str__(self):
-        return ('{}.{}'.format(self.order, self.title))
 
