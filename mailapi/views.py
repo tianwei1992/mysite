@@ -36,14 +36,14 @@ def send_email(request):
         message = ''   # 内容留空是允许的吧？
 
 
-    print("subject",subject)
-    print("message",message)
-    print("from_email",from_email)
+#    print("subject",subject)
+#   print("message",message)
+#    print("from_email",from_email)
 
     if subject and to_email and from_email:
         try:
             to_email = to_email.split(';') #多个收件人以;分隔
-            print("to_email",to_email)
+            # print("to_email",to_email)
             send_mail(subject, message, from_email, to_email)
         except BadHeaderError:
             return_data['code'] = 1
