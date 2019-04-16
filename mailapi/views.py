@@ -9,17 +9,16 @@
 """
 
 import logging
+logger = logging.getLogger('mysite.mailapi.info')
 
 from django.http import JsonResponse
+# Create your views here.
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from utils.get_client_infos import get_visitor_ip
 from utils.get_ip_infos import get_location_calling_free_api
-
-logger = logging.getLogger('mysite.mailapi.info')
-
 
 #先禁用防跨站请求伪造功能，方便 curl post 测试和调用
 @csrf_exempt
@@ -37,14 +36,14 @@ def send_email(request):
         message = ''   # 内容留空是允许的吧？
 
 
-    print("subject",subject)
-    print("message",message)
-    print("from_email",from_email)
+#    print("subject",subject)
+#   print("message",message)
+#    print("from_email",from_email)
 
     if subject and to_email and from_email:
         try:
             to_email = to_email.split(';') #多个收件人以;分隔
-            print("to_email",to_email)
+            # print("to_email",to_email)
             send_mail(subject, message, from_email, to_email)
         except BadHeaderError:
             return_data['code'] = 1
