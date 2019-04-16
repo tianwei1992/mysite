@@ -1,7 +1,8 @@
+from slugify import slugify
+
 from django.db import models
 from django.contrib.auth.models import User
 
-from slugify import slugify
 
 # Create your models here.
 class Image(models.Model):

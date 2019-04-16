@@ -1,19 +1,23 @@
 import traceback
 import logging
-logger = logging.getLogger('mysite.error')
-info_logger = logging.getLogger('mysite.image.info')
+import sys
+import os
+
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+
 from .forms import ImageForm
 from .models import Image
-    
-import sys,os
+from utils.get_client_infos import get_visitor_ip, get_useragent
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
-from utils.get_client_infos import get_visitor_ip, get_useragent
+
+logger = logging.getLogger('mysite.error')
+info_logger = logging.getLogger('mysite.image.info')
 
 
 # Create your views here.
@@ -34,11 +38,13 @@ def upload_image(request):
         logger.error("The form is not valid {} {}".format(form.errors, request.POST))
         return JsonResponse({'status':'2'})
 
+
 @login_required(login_url='/account/login/')
 def list_images(request):
     logger.info("[visited:]list_images{}".format(request.user))
     images = Image.objects.filter(user=request.user)
     return render(request, 'image/list_images.html', {'images': images})
+
 
 @login_required(login_url='/account/login/')
 @require_POST
@@ -52,6 +58,7 @@ def del_image(request):
     except:
         logger.error(traceback.print_exc())
         return JsonResponse({"status":"2"})
+
 
 def falls_images(request):
     ip = get_visitor_ip(request)

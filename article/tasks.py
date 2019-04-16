@@ -1,13 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-import json
-import logging
 import time
+import logging
+import json
 
 from celery import shared_task
+
 from utils.get_client_infos import get_visitor_ip, get_useragent
 from utils.get_ip_infos import get_location_calling_free_api
-
 
 info_logger = logging.getLogger('mysite.article.info')
 """

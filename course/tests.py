@@ -1,7 +1,10 @@
 import unittest
+
 from django.test import Client, TestCase
 from django.contrib.auth.models import User
+
 from .models import Course, Lesson
+
 
 class BrandTest(TestCase):
     def setUp(self):
