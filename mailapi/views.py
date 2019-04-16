@@ -9,16 +9,17 @@
 """
 
 import logging
-logger = logging.getLogger('mysite.mailapi.info')
 
 from django.http import JsonResponse
-# Create your views here.
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from utils.get_client_infos import get_visitor_ip
 from utils.get_ip_infos import get_location_calling_free_api
+
+logger = logging.getLogger('mysite.mailapi.info')
+
 
 #先禁用防跨站请求伪造功能，方便 curl post 测试和调用
 @csrf_exempt

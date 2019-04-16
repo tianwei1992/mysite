@@ -1,4 +1,7 @@
 import json
+
+from braces.views import LoginRequiredMixin
+
 from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.http.response import HttpResponse
@@ -7,7 +10,7 @@ from django.views.generic.base import TemplateResponseMixin
 from django.http import HttpResponseRedirect
 from django.views import View
 from django.contrib.auth.models import User
-from braces.views import LoginRequiredMixin
+
 from .forms import CreateCourseForm,CreateLessonForm
 from .models import Course,Lesson
 
@@ -18,6 +21,7 @@ class GeneralLoginRequiredMixin(LoginRequiredMixin):
 
 class AboutView(TemplateView):
     template_name="course/about.html"
+
 
 class CourseListView(ListView):
     """require neirther login or course.user==request.user""" 
@@ -31,18 +35,22 @@ class UserMixin:
     def get_queryset(self):
         qs = super(UserMixin, self).get_queryset()
         return qs.filter(user=self.request.user)
-    
+
+
 class UserCourseMixin(UserMixin, GeneralLoginRequiredMixin):
     model=Course
 #    login_url = "/account/new-login/"
+
 
 class UserLessonMixin(UserMixin, GeneralLoginRequiredMixin):
     model=Lesson
 #     login_url = "/account/new-login/"
 
+
 class ManageCourseListView(UserCourseMixin, ListView):
     context_object_name = "courses"
     template_name = "course/manage/manage_course_list.html"
+
 
 class HisCourseListView(ListView):
     def get_queryset(self):
@@ -51,7 +59,8 @@ class HisCourseListView(ListView):
     model=Course
     context_object_name = "courses"
     template_name = "course/course_list.html"
-    
+
+
 class CreateCourseView(UserCourseMixin, CreateView):
     # context_object_name = "courses"
     template_name = "course/manage/create_course.html"
@@ -78,10 +87,12 @@ class DeleteCourseView(UserCourseMixin, DeleteView):
         else:
             return resp
 
+
 class UpdateCourseView(UserCourseMixin, UpdateView):
      template_name = "course/manage/update_course.html"
      success_url = reverse_lazy("course:manage_course")
      fields =["title", "overview"]
+
 
 class CreateLessonView(GeneralLoginRequiredMixin, View):
     model = Lesson
@@ -100,7 +111,6 @@ class CreateLessonView(GeneralLoginRequiredMixin, View):
             return redirect("course:manage_course")
         else:
             return redirect("course:manage_course")
-            
 
 
 class ListLessonView(GeneralLoginRequiredMixin, TemplateResponseMixin, View):
@@ -140,6 +150,7 @@ class DeleteLessonView(UserLessonMixin, DeleteView):
         else:
             return resp
 
+
 class UpdateLessonView(UserLessonMixin, UpdateView):
      template_name = "course/manage/update_lesson.html"
      success_url = reverse_lazy("course:manage_course")
@@ -149,6 +160,7 @@ class UpdateLessonView(UserLessonMixin, UpdateView):
         """If the form is valid, save the associated model."""
         self.object = form.save()
         return super().form_valid(form)
+
 
 class StudentListLessonView(ListLessonView):
     template_name = "course/slist_lessons.html"

@@ -1,8 +1,11 @@
-import sys,os
+import sys
+import os
 import json
 import traceback
 import logging
+
 import redis
+
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
@@ -17,22 +20,20 @@ from utils.get_client_infos import get_visitor_ip, get_useragent
 from utils.get_ip_infos import get_location_calling_free_api
 
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
-from .forms import  CommentForm, SearchForm
+from .forms import CommentForm, SearchForm
 from .tasks import start_logging
 from .get_db_datas import search_articles_by
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
+
 logger = logging.getLogger('mysite.error')
 info_logger = logging.getLogger('mysite.article.info')
-
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
 
 def article_titles(request, username=None):
     """文章标题页，username指定某位作者的文章标题页，分页显示"""
-
     if username:
         """公共文章标题页"""
         user =  User.objects.get(username=username)
@@ -128,6 +129,7 @@ def article_detail(request, id, slug):
 
     return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles, "cur_user": cur_user})
 
+
 @require_POST
 def like_article(request):
     if request.user.is_authenticated:
@@ -158,6 +160,7 @@ def like_article(request):
         article_path = request.POST.get("article_url")
         return HttpResponse('/account/new-login/?next=%s' % article_path)
 
+
 @require_POST
 def article_search(request, username=None):
     ip = get_visitor_ip(request)
@@ -181,6 +184,3 @@ def article_search(request, username=None):
     article_info_list = [(article.title, article.author.username, article.author.username, article.get_url_path(), article.body[:80]) for article in articles_list]
     res.update({"articles": article_info_list})
     return HttpResponse(json.dumps(res))
-
-        
-             

@@ -1,7 +1,5 @@
 import traceback
 import logging
-logger = logging.getLogger('mysite.error')
-
 import json
 
 from django.shortcuts import render, get_object_or_404
@@ -12,6 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import ArticleColumn, ArticlePost, ArticleTag
 from .forms import ArticleColumnForm, ArticlePostForm, ArticleTagForm
+
+logger = logging.getLogger('mysite.error')
+
 
 # Create your views here.
 @login_required(login_url='/account/login/')
@@ -60,6 +61,7 @@ def delete_article_column(request):
         logger.error(traceback.print_exc())
         return HttpResponse("0")
 
+
 @login_required(login_url='/account/login/')
 def article_post(request):
     if request.method == "POST":
@@ -91,6 +93,7 @@ def article_post(request):
         article_tags = request.user.tag.all()
         return render(request, "article/column/article_post.html", {"article_columns":article_columns, "articlepost_form":articlepost_form, "article_tags": article_tags})
 
+
 @login_required(login_url='/account/login/')
 def article_list(request):
     articles_list = ArticlePost.objects.filter(author=request.user)
@@ -106,6 +109,7 @@ def article_list(request):
         current_page = paginator.page(paginator.num_pages)
         articles = current_page.object_list
     return render(request, "article/column/article_list.html", {"articles":articles, "page": current_page})
+
 
 @login_required(login_url='/account/login/')
 def article_detail(request, id, slug):
@@ -127,6 +131,7 @@ def delete_article(request):
     except Exception as e:
         logger.error(traceback.print_exc())
         return HttpResponse("0")
+
 
 @login_required(login_url='/account/login/')
 def redit_article(request, article_id):
