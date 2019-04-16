@@ -107,7 +107,7 @@ def article_detail(request, id, slug):
                 new_comment.commentator = request.user
                 new_comment.save()
             else:
-                return HttpResposnse(" Not Allowd, login first,please")
+                return HttpResponse(" Not Allowd, login first,please")
         else:
         # comment as a  visitor, comments are saved in Comment
             comment_form = CommentForm(data=request.POST)
@@ -117,7 +117,8 @@ def article_detail(request, id, slug):
                 new_comment.save()
             else:
                 info_logger.info("表单无效:{}".format(comment_form.errors))
-                logger.error(traceback.print_exc())
+                return HttpResponse("评论失败，请检查")
+                # logger.error(traceback.print_exc())
     elif request.method == "GET":
         info_logger.info('[public visit]article_detail ip:{}[{}] visitor:{} title:{} views:{}'.format(ip, ip_infos, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
 
