@@ -1,5 +1,7 @@
 from django.conf.urls import url
+
 from .views import AboutView, CourseListView,HisCourseListView,ManageCourseListView, CreateCourseView, DeleteCourseView, UpdateCourseView,CreateLessonView,ListLessonView,DetailLessonView,DeleteLessonView, UpdateLessonView, StudentListLessonView,StudentDetailLessonView
+
 
 urlpatterns=[
     url(r'^about/$', AboutView.as_view(), name="about"),

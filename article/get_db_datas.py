@@ -1,7 +1,9 @@
 import logging
+
+from .models import ArticleColumn, ArticlePost, Comment, Applaud
+
 logger = logging.getLogger('mysite.error')
 search_logger = logging.getLogger('mysite.article.info')
-from .models import ArticleColumn, ArticlePost, Comment, Applaud
 
 
 def search_articles_by(by_which, keywords, date_st, date_ed):
@@ -25,7 +27,6 @@ def search_articles_by(by_which, keywords, date_st, date_ed):
         search_logger.info("query_set exists:{}".format(len(articles)))
     else:
         search_logger.info("query_set no exists")
-        
 
     return articles
     
