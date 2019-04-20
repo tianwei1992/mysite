@@ -112,8 +112,9 @@ def my_image(request):
 def my_messages(request):
     my_articles = request.user.article.all()
     my_comments = []
-    [my_comments.extend(article.comments.all()) for article in my_articles]
-    my_comments.sort(key=lambda t:t.created, reverse=True)
+    [my_comments.extend(article.comments.all()) for article in my_articles]    # 匿名评论
+    [my_comments.extend(article.user_comments.all()) for article in my_articles]    # 实名评论
+    my_comments.sort(key=lambda t:t.created, reverse=True)    # 按时间排序
 
     applauds=[]
     [applauds.extend(article.applauds.all()) for article in my_articles]

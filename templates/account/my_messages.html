@@ -10,7 +10,11 @@
 <ol>
 {% for comment in comments %}
     <li>
+    {% if comment.commentator.is_authenticated|default:False %}
+    <a href="{% url 'article:author_articles' comment.commentator.username %}"><strong>{{ comment.commentator }}</strong></a> 评论了 <strong> <a href="{{comment.article.get_url_path}}">《{{ comment.article.title }}》</a> </strong>："{{ comment.body }}"
+    {% else %}
     <strong>{{ comment.commentator }}</strong> 评论了 <strong> <a href="{{comment.article.get_url_path}}">《{{ comment.article.title }}》</a> </strong>："{{ comment.body }}"
+    {% endif %}
     </li>
 {% endfor %}
 </ol>
