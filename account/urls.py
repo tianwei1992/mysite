@@ -9,7 +9,7 @@ app_name = "account"
 urlpatterns = [
     # url('^login/$', views.user_login, name="user_login"),
     url(r'^login/$', auth_views.LoginView.as_view(), name="user_login"),
-    url(r'^new-login/$', auth_views.LoginView.as_view(template_name="account/login.html"), name="user_login"),
+    url(r'^new-login/$', auth_views.LoginView.as_view(template_name="account/login.html", redirect_authenticated_user=True), name="user_login"),
     url(r'^logout/$', auth_views.LogoutView.as_view(), name="user_logout"),
     url(r'^new-logout/$', auth_views.LogoutView.as_view(template_name="account/logout.html"), name="user_logout"),
     url(r'^register/$', views.register, name="register"),
