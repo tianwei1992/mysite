@@ -9,7 +9,7 @@ import redis
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.db.models import Count
@@ -106,6 +106,9 @@ def article_detail(request, id, slug):
                 new_comment.body = body
                 new_comment.commentator = request.user
                 new_comment.save()
+
+                article_path = request.get_full_path()
+                return HttpResponseRedirect(article_path)
             else:
                 return HttpResponse(" Not Allowd, login first,please")
         else:
@@ -115,6 +118,9 @@ def article_detail(request, id, slug):
                 new_comment = comment_form.save(commit=False)
                 new_comment.article = article
                 new_comment.save()
+
+                article_path = request.get_full_path()
+                return HttpResponseRedirect(article_path)
             else:
                 info_logger.info("表单无效:{}".format(comment_form.errors))
                 return HttpResponse("评论失败，请检查")
@@ -140,6 +146,7 @@ def like_article(request):
             try:
                 article = ArticlePost.objects.get(id=article_id)
                 if action == "like":
+                    info_logger.info('like {} {}'.format(article_id, action))
                     article.users_like.add(request.user)
                     # save it to a new Applaud() including created_time
                     new_applaud = Applaud()
@@ -155,7 +162,7 @@ def like_article(request):
                         applaud.delete()
                     return HttpResponse("2")
             except Exception as e:
-                logger.error(traceback.print_exc())
+                # logger.error(traceback.print_exc())
                 return HttpResponse("no")
     else:
         article_path = request.POST.get("article_url")
