@@ -8,9 +8,9 @@ from account import views
 app_name = "account"
 urlpatterns = [
     # url('^login/$', views.user_login, name="user_login"),
-    url(r'^login/$', auth_views.LoginView.as_view(), name="user_login"),
+    # url(r'^login/$', auth_views.LoginView.as_view(), name="user_login"),
     url(r'^new-login/$', auth_views.LoginView.as_view(template_name="account/login.html", redirect_authenticated_user=True), name="user_login"),
-    url(r'^logout/$', auth_views.LogoutView.as_view(), name="user_logout"),
+    # url(r'^logout/$', auth_views.LogoutView.as_view(), name="user_logout"),
     url(r'^new-logout/$', auth_views.LogoutView.as_view(template_name="account/logout.html"), name="user_logout"),
     url(r'^register/$', views.register, name="register"),
     url(r'^password-change/$', auth_views.PasswordChangeView.as_view(success_url=reverse_lazy('account:password_change_done')), name="password_change"),
