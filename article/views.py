@@ -96,8 +96,9 @@ def article_post(request):
 
 @login_required(login_url='/account/login/')
 def article_list(request):
+    NUM_OF_ARTICLES_PER_PAGE = 20
     articles_list = ArticlePost.objects.filter(author=request.user)
-    paginator = Paginator(articles_list, 2)
+    paginator = Paginator(articles_list, NUM_OF_ARTICLES_PER_PAGE)
     page = request.GET.get('page')
     try:
         current_page = paginator.page(page)

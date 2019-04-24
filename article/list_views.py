@@ -46,8 +46,9 @@ def article_titles(request, username=None):
         """指定用户文章标题页"""
         article_titles = ArticlePost.objects.all()
 
-   # 分页 
-    paginator = Paginator(article_titles, 2)
+    # 分页
+    NUM_OF_ARTICLES_PER_PAGE = 4
+    paginator = Paginator(article_titles, NUM_OF_ARTICLES_PER_PAGE)
     page = request.GET.get("page") or '1'
     try:
 
