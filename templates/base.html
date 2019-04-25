@@ -3,29 +3,22 @@
 <html lang="zh-cn">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet"  href="{% static 'css/bootstrap.css' %}">
+    <link rel="icon" href="../static/images/favicon.ico">
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     {% include "header.html" %}
-    <div class="container">
+    <div class="container" >
+        <div style="padding: 60px 15px;">
         {% block content %}
         {% endblock %}
+        </div>
     </div>
     {% include "footer.html" %}
     {% block javascript %}
     {% endblock %}
 </body>
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-138748813-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-138748813-2');
-</script>
-
 </html>

@@ -1,42 +1,50 @@
 {% load staticfiles %}
-<div class="container">
-    <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid"> 
-        <div class="navbar-header">
-            <a class="navbar-brand" href="https://github.com/tianwei1992/mystite"><img src="{% static '/images/logo.png' %}" width="100px"></a>
-        </div>
-     
-            <ul class="nav navbar-nav" role="navigation">
-               <li><a href="{% url 'home' %}">Home</a></li>
-               <li><a href="{% url 'article:article_titles' %}">Articles</a></li>
-               <li><a href="{% url 'image:falls_images' %}">Images</a></li>
-               <li><a href="{% url 'course:course_list' %}">Courses</a></li>
-               <li><a href="{% url 'course:about' %}">About</a></li>
-            </ul>
-           <ul class="nav navbar-nav navbar-right">
-                 {% if user.is_authenticated %}
-                 <li>
-                    <div class="dropdown" style="margin-top:8px">
-                        <button type="button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown">{{ user.username }}<span class="caret"></span>
-                       </button>
-                        <ul class="dropdown-menu" role="menu">
-                             <li><a href="{% url 'account:my_messages' %}">消息管理</a></li>
-                             <li><a href="{% url 'account:new_password_change' %}">修改密码</a></li>
-                             <li><a href="{% url 'account:my_information' %}">个人信息</a></li>
-                             <li><a href="{% url 'article:article_column' %}">后台管理</a></li>
-                        </ul>
-                    </div>
-                 </li>
-                 <!--      <li><a href="#" >{{user.username}}</a></li>               -->
-                 <li><a href="{% url 'account:user_logout' %}" >Logout</a></li>
-                 {% else %}
-                 <li><a href="{% url 'account:user_login' %}">Login</a></li>
-                 <li><a href="{% url 'account:register' %}">Sign up</a></li>
-                 {% endif %}
-           </ul>
+    <nav class="navbar navbar-default navbar-fixed-top">
+{#    <nav class="navbar navbar-default" role="navigation">#}
+
+{#        <div class="container-fluid"> #}
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+                <a class="navbar-brand" href="https://github.com/tianwei1992/mystite"><img src="{% static '/images/logo.png' %}" width="100px"></a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav" role="navigation">
+                   <li><a href="{% url 'home' %}">Home</a></li>
+                   <li><a href="{% url 'article:article_titles' %}">Articles</a></li>
+                   <li><a href="{% url 'image:falls_images' %}">Images</a></li>
+                   <li><a href="{% url 'course:course_list' %}">Courses</a></li>
+                   <li><a href="{% url 'course:about' %}">About</a></li>
+                </ul>
+               <ul class="nav navbar-nav navbar-right">
+                     {% if user.is_authenticated %}
+                     <li>
+                        <div class="dropdown" style="margin-top:8px">
+                            <button type="button" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown">{{ user.username }}<span class="caret"></span>
+                           </button>
+                            <ul class="dropdown-menu" role="menu">
+                                 <li><a href="{% url 'account:my_messages' %}">消息管理</a></li>
+                                 <li><a href="{% url 'account:new_password_change' %}">修改密码</a></li>
+                                 <li><a href="{% url 'account:my_information' %}">个人信息</a></li>
+                                 <li><a href="{% url 'article:article_column' %}">后台管理</a></li>
+                            </ul>
+                        </div>
+                     </li>
+                     <!--      <li><a href="#" >{{user.username}}</a></li>               -->
+                     <li><a href="{% url 'account:user_logout' %}" >Logout</a></li>
+                     {% else %}
+                     <li><a href="{% url 'account:user_login' %}">Login</a></li>
+                     <li><a href="{% url 'account:register' %}">Sign up</a></li>
+                     {% endif %}
+               </ul>
+            </div>
         </div>
     </nav>
-</div>
 
 <script src="{% static 'js/jquery.js' %}"></script>
 <script src="{% static 'js/bootstrap.js' %}"></script>
