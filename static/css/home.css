@@ -1,0 +1,19 @@
+.img--responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.lyric-left {
+    text-align: left;
+    margin-left: 10px
+}
+
+.lyric-right {
+    text-align: right;
+    margin-right: 10px
+}
+
+.background-image-container {
+    padding: 20px 0;
+}

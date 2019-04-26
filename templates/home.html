@@ -1,45 +1,74 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}Home page{% endblock %}
+{% block title %}田田田田|首页{% endblock %}
 {% block content %}
-<div class="text-center" style="margin-top:10px; font-style:italic; color:LightSlateGray ; width:100%;height:70%;text-align:center;font-size:1.2em;font-family:'Times New Roman', Times, serif; line-height:100%; overflow:hidden; ">
-    <div style="float: left; width: 60%;">
+<div class="container">
+
+<div class="col-md-9">
+    <div class="background-image-container">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<!--<div class="text-center media-middle" style="margin-top:10px; font-style:italic; color:LightSlateGray ; width:100%;height:70%;text-align:center;font-size:1.2em;font-family:'Times New Roman', Times, serif; line-height:100%; overflow:hidden; ">
+    <div style="float: left; width: 60%;">-->
     {% load staticfiles %}
-    <img src="{% static 'images/home.jpg' %}" style="width:650px;height:320px;">
+    <img class="media-object img-responsive"  src="{% static 'images/home.jpg' %}" alt="亚丁机场">
     </div>
-    <div style="float: left; width: 28%;margin-top:20px margin-bottom:20px">
+</div>
+
+<div class="col-md-3">
+    <div class="panel panel-default">
+    <div class="panel-body">
+    <div class="lyric-left">
    <p> 宇宙的无理性偶然</p><p>
 呈现在你触动夏天的指尖</p><p>
 穿越过工业区穿越过梯田</p><p>
 相遇在漫长隧道的另一面</p><p>
     </div>
-    <div style="float: right; width: 28%;margin-top:20px margin-bottom:20px">
+    </div>
+    </div>
+
+
+    <div class="panel panel-default">
+    <div class="panel-body">
+    <div class="lyric-right">
    <p> 回望身后片刻的永恒</p><p>
 像鸟一样在天空翱翔</p><p>
 恋爱和迁徙自由的飞翔</p><p>
 栖息在最无边的土壤</p><p>
     </div>
-    <div style="float:left; width: 28%;margin-top:50px font-size:1.3em;">
+    </div>
+    </div>
+
+    <div class="panel panel-default">
+    <div class="panel-body">
+    <div class="lyric-left">
     <p>时空飞逝 年华老去</p>
     <p>我们也许无力前行</p>
     <p>但是你我都能知道</p>
     <p>那是唯一的方向</p>
     </div>
+    </div>
+    </div>
+
+    <div style="text-align:center;">
+        <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+    </div>
+
+
 </div>
 
-<div style="width:100%; margin-top:20px;">
-<div style="width:80%;float: left; ">
-<audio controls preload="metadata" style="width:900px;">
+</div>
+
+<div class="container">
+<audio controls preload="metadata" class="col-md-5 col-xs-5 col-sm-5">
     <source src="{% static 'audios/明天你依旧在我身旁.acc' %}" type="audio/mpeg">
     Your browser does not support the audio element.
 </audio>
-</div>
-<div class="info text-center" style="width:9%;float: left;">
+<div class="info text-center" class="col-md-2 col-xs-2 col-sm-2">
 <!--
                 <div class="album">专辑：<span><a target="_blank" href="http://www.kuwo.cn/album/5484022/">声音玩具＆逃跑计划·专场</a></span></div>
                 <div class="artist">歌手：<span><a target="_blank" href="http://www.kuwo.cn/artist/content?name=%E5%A3%B0%E9%9F%B3%E7%8E%A9%E5%85%B7" data-id="4185">声音玩具</a></span></div>
 -->
-                <div class="singleShareBox" style="text-align:right;margin-top:10px">
+                <div class="singleShareBox" style="text-align:left; margin-left:50px; margin-top:20px">
                     <button href="javascript:;" class="share" >分享歌曲</button>
                     <div class="singleSharecontent" style="display: none;">
                         <a href="javascript:;" class="quickShare new_sina" data-cmd="tsina" title="分享到新浪微博">分享到新浪微博</a>
