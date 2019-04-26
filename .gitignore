@@ -10,6 +10,8 @@ migrations/
 static/images/
 !static/images/back_logo.png
 !static/images/logo.png
+!static/images/home.jpg
+
 media/
 logs/
 mysite/redis_settings.py
