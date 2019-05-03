@@ -14,9 +14,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.db.models import Count
 
-from utils.get_client_infos import get_visitor_ip, get_useragent
-from utils.get_ip_infos import get_location_calling_free_api
-from utils.get_client_infos import get_visitor_ip, get_useragent
+from utils.get_client_infos import get_visitor_ip, get_useragent, get_visitor_infos
 from utils.get_ip_infos import get_location_calling_free_api
 
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
@@ -32,110 +30,117 @@ info_logger = logging.getLogger('mysite.article.info')
 r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
 
+def paginate(item_list, page,  num_per_page=4):
+    """分页函数"""
+    paginator = Paginator(item_list, num_per_page)
+
+    try:
+        current_page = paginator.page(page)
+        item_list = current_page.object_list
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+        item_list = current_page.object_list
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+        item_list = current_page.object_list
+    return current_page, item_list
+
+
+def update_views_and_ranking(article_id):
+    total_views = r.incr("article:{}:views".format(article_id)) # 更新文章访问次数
+    r.zincrby("article_ranking", article_id, 1) # 更新文章排名
+    return total_views
+
+
 def article_titles(request, username=None):
     """文章标题页，username指定某位作者的文章标题页，分页显示"""
     if username:
-        """公共文章标题页"""
-        user =  User.objects.get(username=username)
-        article_titles = ArticlePost.objects.filter(author=user)
-        try:
-            userinfo = user.userinfo
-        except:
-            userinfo = None
-    else:
         """指定用户文章标题页"""
-        article_titles = ArticlePost.objects.all()
+        article_titles, author, userinfo = ArticlePost.get_articles_with_userinfo_by_authorname(author_name=username)
+    else:
+        """公共文章标题页"""
+        article_titles = ArticlePost.get_articles_all()
 
     # 分页
     NUM_OF_ARTICLES_PER_PAGE = 4
-    paginator = Paginator(article_titles, NUM_OF_ARTICLES_PER_PAGE)
     page = request.GET.get("page") or '1'
-    try:
+    current_page, articles = paginate(article_titles, page, NUM_OF_ARTICLES_PER_PAGE, )
 
-        current_page = paginator.page(page)
-        articles = current_page.object_list
-    except PageNotAnInteger:
-        current_page = paginator.page(1)
-        articles = current_page.object_list
-    except EmptyPage:
-        current_page = paginator.page(paginator.num_pages)
-        articles = current_page.object_list
 
     # 提取客户端相关信息
-    ip = get_visitor_ip(request)
-    ua = get_useragent(request)
+    ip, ip_infos, ua = get_visitor_infos(request)
     visitor = request.user.username if request.user.is_authenticated else "Anomynmous"
-    
-    # 开始记录日志
+
+    # 记录日志
     if username:
         log_str = '[public visit]author_article_titles'
-        start_logging.delay(log_str, ip=ip, username=visitor, ua=ua, Page=page, Author=username) 
-        # info_logger.info('[public visit]auhor_article_titles ip:{}[{}] author:{} page:{}'.format(ip, ip_infos, request.user.username, current_page))
-        return render(request, "article/list/author_articles.html",{ "articles":articles, "page":current_page, "userinfo":userinfo, "user_to_show":user})
+        start_logging.delay(log_str, ip=ip, username=visitor, ua=ua, Page=page, Author=username)
+
+        context = {
+            "articles": articles,
+            "page": current_page,
+            "userinfo": userinfo,
+            "user_to_show": author
+        }
+        template_path = "article/list/author_articles.html"
     else:
         log_str = '[public visit]article_titles'
-        start_logging.delay(log_str,  ip=ip, username=visitor, ua=ua, Page=page) 
-        # info_logger.info('[public visit]article_titles ip:{}[{}] visitor:{} page:{} ua:{}'.format(ip, ip_infos,  request.user.username if request.user.is_authenticated else "Anonymous", current_page, ua))
-        search_form = SearchForm()
-        return render(request, "article/list/article_titles.html", {"articles":articles, "page":current_page,"search_form": search_form})
+        start_logging.delay(log_str,  ip=ip, username=visitor, ua=ua, Page=page)
+
+        context = {
+            "articles": articles,
+            "page": current_page,
+            "search_form": SearchForm()
+        }
+        template_path = "article/list/article_titles.html"
+    return render(request, template_path, context)
 
 
 def article_detail(request, id, slug):
-    ip = get_visitor_ip(request)
-    ip_infos = get_location_calling_free_api(ip)
-    ua = get_useragent(request)
+    ip, ip_infos, ua = get_visitor_infos(request)
 
+    cur_user = request.user if request.user.is_authenticated else None
+    username = cur_user.username if cur_user else "Anonymous"
     article = get_object_or_404(ArticlePost, id=id, slug=slug)
-    total_views = r.incr("article:{}:views".format(article.id))
-    r.zincrby("article_ranking", article.id, 1)
+    article_path = request.get_full_path()
 
-    article_ranking = r.zrange("article_ranking", 0, -1, desc=True)[:10]
-    article_ranking_ids = [int(id) for id in article_ranking]
-    most_viewed = list(ArticlePost.objects.filter(id__in=article_ranking_ids))
-    most_viewed.sort(key=lambda x: article_ranking_ids.index(x.id))
-    # find out similar articles
-    article_tags = article.article_tag.all() # #从一个tag获得对应的所有Aricle对象
-    similar_articles = ArticlePost.objects.filter(article_tag__in=article_tags).exclude(id=article.id)
-    similar_articles = similar_articles.annotate(same_tags=Count("article_tag")).order_by('-same_tags', '-created')[:4]
+    total_views = update_views_and_ranking(id)
+    most_viewed = ArticlePost.get_most_viewed_articles()
+    similar_articles = article.get_similar_articles()
+
     if request.method == "POST":
-        if request.POST.get("if_as_login"):
-        # if comment as a login user, comments are saved in UserComment
-            body = request.POST.get("body")
-            if request.user.is_authenticated and body:   
-                new_comment = UserComment()
-                new_comment.article = article
-                new_comment.body = body
-                new_comment.commentator = request.user
-                new_comment.save()
+        if_as_login = request.POST.get("if_as_login")
+        body = request.POST.get("body")    # if_login...
+        comment_form = CommentForm(data=request.POST)    # else not login...
 
-                article_path = request.get_full_path()
+        if if_as_login:   # if comment as a login user, comments are saved in UserComment
+            if cur_user and body:
+                article.save_a_usercomment(body, cur_user)
                 return HttpResponseRedirect(article_path)
             else:
-                return HttpResponse(" Not Allowd, login first,please")
-        else:
-        # comment as a  visitor, comments are saved in Comment
-            comment_form = CommentForm(data=request.POST)
+                return HttpResponse("不允许的操作，未登录或者评论内容为空")
+        else:    # comment as a  visitor, comments are saved in Comment
             if comment_form.is_valid():
-                new_comment = comment_form.save(commit=False)
-                new_comment.article = article
-                new_comment.save()
-
-                article_path = request.get_full_path()
+                article.save_a_visitorcomment(comment_form)
                 return HttpResponseRedirect(article_path)
             else:
                 info_logger.info("表单无效:{}".format(comment_form.errors))
                 return HttpResponse("评论失败，请检查")
-                # logger.error(traceback.print_exc())
+
     elif request.method == "GET":
-        info_logger.info('[public visit]article_detail ip:{}[{}] visitor:{} title:{} views:{}'.format(ip, ip_infos, request.user.username if request.user.is_authenticated else "Anonymous", article.title, total_views))
+        log_str = '[public visit]article_detail'
+        start_logging.delay(log_str, ip=ip, username=username, views=str(total_views), title=article.title, )
 
-    # starting to return...
-    cur_user = None
-    if request.user.is_authenticated:
-        cur_user = request.user 
     comment_form = CommentForm()
-
-    return render(request, "article/list/article_detail.html", {"article": article, "total_views": total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles": similar_articles, "cur_user": cur_user})
+    context = {
+        "article": article,
+        "total_views": total_views,
+        "most_viewed": most_viewed,
+        "comment_form": comment_form,
+        "similar_articles": similar_articles,
+        "cur_user": cur_user,
+    }
+    return render(request, "article/list/article_detail.html", context)
 
 
 @require_POST
@@ -163,7 +168,6 @@ def like_article(request):
                         applaud.delete()
                     return HttpResponse("2")
             except Exception as e:
-                # logger.error(traceback.print_exc())
                 return HttpResponse("no")
     else:
         article_path = request.POST.get("article_url")

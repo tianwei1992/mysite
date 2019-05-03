@@ -3,7 +3,8 @@ Update: 2019.03.15
 从IP获得IP相关信息
 """
 
-import os, sys
+import os
+import sys
 import re
 import logging
 import requests

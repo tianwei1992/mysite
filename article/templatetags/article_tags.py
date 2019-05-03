@@ -11,7 +11,10 @@ def total_articles():
 
 @register.simple_tag
 def author_total_articles(user):
-    return user.article.count()
+    author_article_num = 0
+    if user:
+        author_article_num = user.article.count()
+    return author_article_num
 
 @register.inclusion_tag('article/list/latest_articles.html')
 def latest_articles(n=5):

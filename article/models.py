@@ -3,8 +3,14 @@ from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from django.conf import settings
+from django.db.models import Count
+
+import redis
 
 from slugify import slugify
+
+r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, db=settings.REDIS_DB)
 
 
 # Create your models here.
@@ -53,7 +59,53 @@ class ArticlePost(models.Model):
     def get_url_path(self):
         # print(reverse("article:article_detail", args=[self.id, self.slug]))
         return reverse("article:list_article_detail", args=[self.id, self.slug])
-  
+
+    @classmethod
+    def get_articles_with_userinfo_by_authorname(cls, author_name):
+        userinfo = None
+        try:
+            author = User.objects.get(username=author_name)
+            userinfo = author.userinfo
+            article_titles = cls.objects.filter(author=author)
+        except User.DoesNotExist:
+            author = None
+            article_titles = cls.objects.none()
+
+        return article_titles, author, userinfo
+
+    @classmethod
+    def get_articles_all(cls):
+        article_titles = ArticlePost.objects.select_related('author').all()
+        return article_titles
+
+    @classmethod
+    def get_most_viewed_articles(cls):
+        article_ranking = r.zrange("article_ranking", 0, -1, desc=True)[:10]
+        article_ranking_ids = [int(id) for id in article_ranking]
+        most_viewed = list(ArticlePost.objects.filter(id__in=article_ranking_ids))
+        most_viewed.sort(key=lambda x: article_ranking_ids.index(x.id))
+        return most_viewed
+
+    def get_similar_articles(self):
+        article_tags = self.article_tag.all()  # #从一个tag获得对应的所有Aricle对象
+        similar_articles = ArticlePost.objects.filter(article_tag__in=article_tags).exclude(id=self.id)
+        similar_articles = similar_articles.annotate(same_tags=Count("article_tag")).order_by('-same_tags', '-created')[
+                           :4]
+        return similar_articles
+
+    def save_a_usercomment(self, body, user):
+        new_comment = UserComment()
+        new_comment.article = self
+        new_comment.body = body
+        new_comment.commentator = user
+        new_comment.save()
+
+    def save_a_visitorcomment(self, comment_form):
+        new_comment = comment_form.save(commit=False)
+        new_comment.article = self
+        new_comment.save()
+
+
 class Comment(models.Model):
     article = models.ForeignKey(ArticlePost, related_name="comments", on_delete="CASCADE")
     commentator = models.CharField(max_length=90)
@@ -65,6 +117,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return "Comment by {0} on {1}".format(self.commentator.username, self.article)
+
 
 class UserComment(models.Model):
     article = models.ForeignKey(ArticlePost, related_name="user_comments", on_delete="CASCADE")
