@@ -24,7 +24,7 @@ def start_logging(log_str, ip=None, username=None, ua=None, **kwargs):
     """填充模板log_str，生成日志内容，并写入文件"""
     if ip:
         ip_infos = get_location_calling_free_api(ip)
-        log_str += 'IP:{}[{}] '.format(ip, ip_infos)
+        log_str += ' IP:{}[{}] '.format(ip, ip_infos)
     if ua:
         log_str += 'UA:{} '.format(ua)
     if username:

@@ -143,44 +143,58 @@ def article_detail(request, id, slug):
     return render(request, "article/list/article_detail.html", context)
 
 
+LIKE_SUCC_SIGNAL = '1'
+UNLIKE_SUCC_SIGNAL = '2'
+
+def like_this_article(article, user):
+    article.users_like.add(user)
+
+    new_applaud = Applaud()
+    new_applaud.applauder = user
+    new_applaud.article = article
+    new_applaud.save()
+    return LIKE_SUCC_SIGNAL
+
+
+def unlike_this_article(article, user):
+    article.users_like.remove(user)
+
+    applaud = Applaud.objects.filter(applauder=user, article=article)
+    if applaud:
+        applaud.delete()
+    return UNLIKE_SUCC_SIGNAL
+
+
 @require_POST
 def like_article(request):
     if request.user.is_authenticated:
         article_id = request.POST.get("id")
         action = request.POST.get("action")
+        user = request.user
+
         if article_id and action:
             try:
-                article = ArticlePost.objects.get(id=article_id)
+                article = get_object_or_404(ArticlePost, id=article_id)
                 if action == "like":
-                    info_logger.info('like {} {}'.format(article_id, action))
-                    article.users_like.add(request.user)
-                    # save it to a new Applaud() including created_time
-                    new_applaud = Applaud()
-                    new_applaud.applauder = request.user
-                    new_applaud.article = article
-                    new_applaud.save()
-                    return HttpResponse("1")
-                else:
-                    article.users_like.remove(request.user)
-                    # remove it from Applaud model
-                    applaud = Applaud.objects.filter(applauder=request.user, article=article)
-                    if applaud:
-                        applaud.delete()
-                    return HttpResponse("2")
-            except Exception as e:
-                return HttpResponse("no")
+                    suc =like_this_article(article, user)
+                elif action == "unlike":
+                    suc = unlike_this_article(article, user)
+
+                ip, ip_infos, ua = get_visitor_infos(request)
+                log_str = '[public visit]like_article'
+                start_logging.delay(log_str, ip=ip, applauder=user.username, action=action, title=article.title)
+                return HttpResponse(suc)
+            except Exception as e:   # 什么时候有exception？
+                return HttpResponse("0")
     else:
         article_path = request.POST.get("article_url")
         return HttpResponse('/account/new-login/?next=%s' % article_path)
 
 
-@require_POST
-def article_search(request, username=None):
-    ip = get_visitor_ip(request)
-    ip_infos = get_location_calling_free_api(ip)
-    ua = get_useragent(request)
-    search_form = SearchForm(data=request.POST)
-    articles_list = []
+def start_search(search_form):
+    article_info_list = []
+    flg = 0
+
     if search_form.is_valid():
         flg = 1
         cd = search_form.cleaned_data
@@ -190,10 +204,26 @@ def article_search(request, username=None):
             date_st = cd['date_st']
             date_ed = cd['date_ed']
         # get a query_set by k
-        articles_list = search_articles_by(by_which, keywords, date_st, date_ed);
-    else:
-        flg = 0
-    res = {"status": flg}
-    article_info_list = [(article.title, article.author.username, article.author.username, article.get_url_path(), article.body[:80]) for article in articles_list]
-    res.update({"articles": article_info_list})
+        articles_list = search_articles_by(by_which, keywords, date_st, date_ed)
+
+        article_info_list = [
+            (article.title, article.author.username, article.author.username, article.get_url_path(), article.body[:80])
+            for article in articles_list]
+
+    return flg, article_info_list
+
+
+@require_POST
+def article_search(request):
+    search_form = SearchForm(data=request.POST)
+    flg, article_info_list = start_search(search_form)
+
+    ip, ip_infos, ua = get_visitor_infos(request)
+    log_str = '[public visit]article_search'
+    start_logging.delay(log_str, ip=ip, status=flg, search_form=search_form.cleaned_data)
+
+    res = {
+        "articles": article_info_list,
+        "status": flg,
+    }
     return HttpResponse(json.dumps(res))
