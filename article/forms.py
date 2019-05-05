@@ -1,3 +1,4 @@
+import datetime
 from django import forms
 
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, ArticleTag
@@ -32,5 +33,5 @@ class SearchForm(forms.Form):
     choices = [('author', '作者'), ('title', '标题'), ('body', '内容'), ('all', '不限')]
     by_which = forms.ChoiceField(widget=forms.Select,choices=choices, required=True) 
     keywords = forms.CharField(required=True, max_length=50, strip=True)
-    date_st = forms.DateField(widget=forms.SelectDateWidget(years=year_choices))
-    date_ed = forms.DateField(widget=forms.SelectDateWidget(years=year_choices))
+    date_st = forms.DateField(widget=forms.SelectDateWidget(years=year_choices), initial=datetime.date(2018,10,25))
+    date_ed = forms.DateField(widget=forms.SelectDateWidget(years=year_choices), initial=datetime.date.today)
