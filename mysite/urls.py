@@ -20,6 +20,9 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from article.rss import LatestPostFeed
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^blog/', include('blog.urls')),
@@ -31,6 +34,7 @@ urlpatterns = [
     url(r'^home/$', TemplateView.as_view(template_name="home.html"), name="home"),
     url(r'^image/',include(('image.urls', "image"), namespace='image')),
 
+    url(r'^rss|feed/', LatestPostFeed(), name='rss'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
