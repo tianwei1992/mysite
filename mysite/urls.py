@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^home/$', TemplateView.as_view(template_name="home.html"), name="home"),
     url(r'^image/',include(('image.urls', "image"), namespace='image')),
 
-    url(r'^rss|feed/', LatestPostFeed(), name='rss'),
+    url(r'^rss/$', LatestPostFeed(), name='rss'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
