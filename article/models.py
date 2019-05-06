@@ -49,7 +49,10 @@ class ArticlePost(models.Model):
         return self.title
 
     def save(self, *args, **kargs):
+        REPLACE_CHAPTER = '-'
         self.slug = slugify(self.title)
+        if not self.slug:     # To deal with: slugify('-') == "" 
+            self.slug = REPLACE_CHAPTER 
         super(ArticlePost, self).save(*args, **kargs)
 
     def get_absolute_url(self):
