@@ -19,8 +19,10 @@ from django.conf.urls import url, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps import views as sitemap_views
 
 from article.rss import LatestPostFeed
+from article.sitemap import ArticlePostSitemap
 
 
 urlpatterns = [
@@ -35,6 +37,7 @@ urlpatterns = [
     url(r'^image/',include(('image.urls', "image"), namespace='image')),
 
     url(r'^rss/$', LatestPostFeed(), name='rss'),
+    url(r'^sitemap\.xml$', sitemap_views.sitemap, {'sitemaps': {'posts': ArticlePostSitemap}}, name='sitemap'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

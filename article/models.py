@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
 from django.db.models import Count
+from django.utils.functional import cached_property
 
 import redis
 
@@ -107,6 +108,11 @@ class ArticlePost(models.Model):
         new_comment = comment_form.save(commit=False)
         new_comment.article = self
         new_comment.save()
+
+    @cached_property
+    def tags(self):
+        return ','.join(self.article_tag.values_list('tag', flat=True))
+
 
 
 class Comment(models.Model):
