@@ -31,7 +31,7 @@ class ArticleTagForm(forms.ModelForm):
 class SearchForm(forms.Form):
     year_choices = (2018, 2019, 2020, 2021)
     choices = [('author', '作者'), ('title', '标题'), ('body', '内容'), ('all', '不限')]
-    by_which = forms.ChoiceField(widget=forms.Select,choices=choices, required=True) 
+    by_which = forms.ChoiceField(widget=forms.Select,choices=choices, required=True, initial='all') 
     keywords = forms.CharField(required=True, max_length=50, strip=True)
     date_st = forms.DateField(widget=forms.SelectDateWidget(years=year_choices), initial=datetime.date(2018,10,25))
     date_ed = forms.DateField(widget=forms.SelectDateWidget(years=year_choices), initial=datetime.date.today)
