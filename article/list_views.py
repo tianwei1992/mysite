@@ -17,6 +17,8 @@ from django.db.models import Count
 from utils.get_client_infos import get_visitor_ip, get_useragent, get_visitor_infos
 from utils.get_ip_infos import get_location_calling_free_api
 
+from account.models import Friendship
+
 from .models import ArticleColumn, ArticlePost, Comment, UserComment, Applaud
 from .forms import CommentForm, SearchForm
 from .tasks import start_logging
@@ -80,7 +82,10 @@ def article_titles(request, username=None):
             "articles": articles,
             "page": current_page,
             "userinfo": userinfo,
-            "user_to_show": author
+            "user_to_show": author, 
+            "follower_num": author.follower.count(),
+            "followed_num": author.followed.count(),
+            "is_following": Friendship.is_following(request.user, author)
         }
         template_path = "article/list/author_articles.html"
     else:

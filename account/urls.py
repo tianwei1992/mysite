@@ -27,4 +27,8 @@ urlpatterns = [
     url(r'^edit-my-information/$', views.myself_edit, name="edit_my_information"),
     url(r'my-image/$', views.my_image, name="my_image"),
     url(r'my-messages/$', views.my_messages, name="my_messages"),
+
+
+    url(r'^follow/(?P<followed>[-\w]+)/$', views.follow, name="follow"),
+    url(r'^unfollow/(?P<followed>[-\w]+)/$', views.unfollow, name="unfollow"),
 ]

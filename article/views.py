@@ -4,8 +4,10 @@ import json
 
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import ArticleColumn, ArticlePost, ArticleTag
@@ -189,3 +191,5 @@ def delete_article_tag(request):
     except Exception as e:
         logger.error(traceback.print_exc())
         return HttpResponse("2")
+
+

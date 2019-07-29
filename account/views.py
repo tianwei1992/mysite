@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from .forms import LoginForm, RegistrationForm, UserProfileForm, UserForm, UserInfoForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import UserProfile, UserInfo
+from .models import UserProfile, UserInfo, Friendship
 
 def user_login(request):
     if request.method == "POST":
@@ -142,3 +142,22 @@ def password_change(request):
         # user_form = UserForm(instance=request.user)
         user_form = PasswordChangeForm()
         return render(request, "account/password_change_form.html", {"form":user_form})
+
+
+
+@login_required(login_url='/account/login/')
+def follow(request, followed):
+    u1 = request.user
+    u2 = User.objects.get(username=followed)
+    Friendship.follow(u1, u2)
+    
+    return HttpResponseRedirect(reverse('article:author_articles', args=[followed]))
+
+
+@login_required(login_url='/account/login/')
+def unfollow(request, followed):
+    u1 = request.user
+    u2 = User.objects.get(username=followed)
+    Friendship.unfollow(u1, u2)
+    return HttpResponseRedirect(reverse('article:author_articles', args=[followed]))
+    

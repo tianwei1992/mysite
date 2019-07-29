@@ -33,7 +33,16 @@
 </div>
 
 <div>
-    <p>{{ user_to_show.username }}</p>
+    <p>{{ user_to_show.username }}
+
+    {% if is_following %}
+    <a href="{% url 'account:unfollow' user_to_show %}"> 取消关注 </a>
+    {% elif user_to_show.username != request.user.username %}
+    <a href="{% url 'account:follow' user_to_show %}"> 关注 </a>
+    {% endif %}
+    </p>
+
+    <p>{{ follower_num }} 粉丝， {{ followed_num}}关注
     <p>共发表{% author_total_articles user_to_show %}篇文章。</p>
     {% if userinfo %}
         <p>{{ userinfo.company }}</p>
