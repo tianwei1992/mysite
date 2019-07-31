@@ -24,7 +24,7 @@ def user_login(request):
              return HttpResponse("Invalid data")
     if request.method == "GET":
         login_form = LoginForm()
-        return render(request, "account/login.html", {"form": login_form})
+        return render(request, "account/new-login.html", {"form": login_form})
             
 def register(request):
     if request.method == "POST":
@@ -55,14 +55,14 @@ def register(request):
         userprofile_form = UserProfileForm()
         return render(request, "account/register.html", {"form": user_form, "profile": userprofile_form})
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def myself(request):
     user = User.objects.get(username=request.user.username)
     userprofile = UserProfile.objects.get(user=user)
     userinfo = UserInfo.objects.get(user=user)
     return render(request, "account/myself.html", {"user":user, "userinfo":userinfo, "userprofile":userprofile})
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def myself_edit(request):
     user = User.objects.get(username=request.user.username)
     # origin:user=request.user,but does it matter?
@@ -97,7 +97,7 @@ def myself_edit(request):
         return render(request, "account/myself_edit.html", {"user_form":user_form, "userprofile_form":userprofile_form, "userinfo_form": userinfo_form, "userinfo": userinfo})
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def my_image(request):
     if request.method == "POST":
         img = request.POST['img']
@@ -109,7 +109,7 @@ def my_image(request):
         return render(request, 'account/imagecrop.html',)
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def my_messages(request):
     my_articles = request.user.article.all()
     my_comments = []
@@ -123,7 +123,7 @@ def my_messages(request):
 
     return render(request, 'account/my_messages.html', {"comments":my_comments,"comments_cnt":len(my_comments), "applauds": applauds, "applauds_cnt":len(applauds)})
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def password_change(request):
     if request.method == "POST":
         user_form = PasswordChangeForm(request.POST)
@@ -145,7 +145,7 @@ def password_change(request):
 
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def follow(request, followed):
     u1 = request.user
     u2 = User.objects.get(username=followed)
@@ -154,7 +154,7 @@ def follow(request, followed):
     return HttpResponseRedirect(reverse('article:author_articles', args=[followed]))
 
 
-@login_required(login_url='/account/login/')
+@login_required(login_url='/account/new-login/')
 def unfollow(request, followed):
     u1 = request.user
     u2 = User.objects.get(username=followed)
