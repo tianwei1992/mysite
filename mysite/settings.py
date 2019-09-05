@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import sys
 
+from dotenv import load_dotenv
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))    # 从.env文件导入环境变
+
+
 CONF_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(CONF_DIR)
 
@@ -21,6 +27,21 @@ from .logging_settings import *
 from .get_envs import if_online_env
 from confs.redis_settings import *
 
+
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT_ONLINE = os.environ.get('REDIS_PORT_ONLINE')
+REDIS_PORT_OFFLINE = os.environ.get('REDIS_PORT_OFFLINE')
+REDIS_DB = os.environ.get('REDIS_DB')
+REDIS_PASSWORD_ONLINE = os.environ.get('REDIS_PASSWORD_ONLINE')
+REDIS_PASSWORD_OFFLINE = os.environ.get('REDIS_PASSWORD_OFFLINE')
 
 IF_ONLINE = if_online_env()
 
