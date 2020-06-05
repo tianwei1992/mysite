@@ -7,7 +7,7 @@ celery==4.2.1
 certifi==2018.10.15
 chardet==3.0.4
 decorator==4.3.0
-Django==2.1.2
+Django==2.2.13
 django-braces==1.13.0
 django-environ==0.4.5
 django-password-reset==2.0
