@@ -4,7 +4,7 @@ awesome-slugify==1.6.5
 backcall==0.1.0
 billiard==3.5.0.5
 celery==4.2.1
-certifi==2018.10.15
+certifi==2022.12.7
 chardet==3.0.4
 decorator==4.3.0
 Django==2.1.2
